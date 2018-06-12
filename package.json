@@ -12,8 +12,10 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@types/winston": "^2.3.9",
     "express": "^4.16.3",
-    "typings": "^2.1.1"
+    "typings": "^2.1.1",
+    "winston": "^3.0.0"
   },
   "devDependencies": {
     "@types/express": "^4.16.0",

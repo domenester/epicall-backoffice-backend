@@ -1,6 +1,7 @@
 import * as express from "express";
 import * as http from "http";
 import {serverConfig} from "./config/server";
+import Logger from "./services/logger/logger";
 
 class Server {
 
@@ -16,8 +17,7 @@ class Server {
 
     public start(callback?: () => void): void {
         this.server = this.app.listen(this.port, () => {
-            // tslint:disable-next-line:no-console
-            console.log("Listening at port: " + this.port);
+            Logger.log("info", `Listening at port: ${this.port}`);
             if (callback) { callback(); }
         });
     }
