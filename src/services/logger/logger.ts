@@ -1,16 +1,15 @@
 import * as winston from "winston";
+import ILogger, { winstonLevels } from "./logger.interface";
 
 const { combine, timestamp, label, printf } = winston.format;
 
-type winstonLevels = "error" | "warn" | "info" | "verbose" | "debug" | "silly";
+class Logger implements ILogger {
 
-class Logger {
+    public defaultFormat = printf((info) => `${info.timestamp} [${info.label}] ${info.level}: ${info.message}`);
 
-    private defaultFormat = printf((info) => `${info.timestamp} [${info.label}] ${info.level}: ${info.message}`);
+    public level: winstonLevels = "info";
 
-    private level: winstonLevels = "info";
-
-    private logger = winston.createLogger({
+    public logger = winston.createLogger({
         format: combine(
             label({ label: "Stack" }),
             timestamp(),
