@@ -1,23 +1,23 @@
 import { ErrorRequestHandler } from "express-serve-static-core";
 import ILogger from "../logger/logger.interface";
 
-interface IErrorGenerator extends Error {
+export interface IErrorGenerator extends Error {
   code: number;
   stack: string;
 }
 
 class ErrorHandler {
 
-    private Logger: ILogger;
+    private logger: ILogger;
 
-    constructor(Logger: ILogger) {
-        this.Logger = Logger;
+    constructor(logger: ILogger) {
+        this.logger = logger;
     }
 
     public handler: ErrorRequestHandler = (err: IErrorGenerator, req, res, next) => {
         if (err) {
-            this.Logger.log("error", err);
-            throw errorGenerator(err.message, err.code, err.stack);
+            this.logger.log("error", err);
+            res.status(err.code).send(err.message);
         } else {
           next();
         }
