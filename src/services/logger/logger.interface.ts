@@ -7,5 +7,5 @@ export default interface ILogger {
     defaultFormat: logform.Format;
     level: winstonLevels;
     logger: winston.Logger;
-    log: (level: winstonLevels, message: string) => void;
+    log: (level: winstonLevels, message: any) => void;
 }

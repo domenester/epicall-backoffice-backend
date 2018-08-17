@@ -19,7 +19,7 @@ class Logger implements ILogger {
         transports: [new winston.transports.Console()],
     });
 
-    public log(level: winstonLevels, message: string): void {
+    public log(level: winstonLevels, message: any): void {
         this.logger.log({level, message});
     }
 }
