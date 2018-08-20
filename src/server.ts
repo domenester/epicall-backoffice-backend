@@ -1,12 +1,12 @@
 import * as express from "express";
-import {ErrorRequestHandler} from "express-serve-static-core";
+import {ErrorRequestHandler, RequestHandler} from "express-serve-static-core";
 import * as http from "http";
+import * as winston from "winston";
 import serverConfigs from "./config/server";
 import {IEndpointAPI} from "./services/endpoint/endpoint.interface";
 import EndpointsApi from "./services/endpoint/index";
 import {errorGenerator, errorHandler, IErrorGenerator} from "./services/error/error";
-import Logger from "./services/logger/logger";
-import ILogger from "./services/logger/logger.interface";
+import {default as Logger} from "./services/logger/logger";
 
 class Server {
 
@@ -16,81 +16,68 @@ class Server {
 
     private port: number = serverConfigs.port;
 
-    private logger: ILogger;
+    private logger: winston.Logger;
 
     private errorHandler: ErrorRequestHandler;
 
     constructor() {
         this.app = express();
-        this.logger = Logger;
+        this.logger = Logger();
         this.errorHandler = errorHandler(this.logger);
     }
 
     public async start(): Promise<void> {
       try {
-        await Promise.all([
-          this.exposeEndpoints(),
-          this.middlewares(),
-        ]);
+        await this.middlewares();
+        await this.exposeEndpoints();
         this.server = this.app.listen(this.port, () => {
-          this.logger.log("info", `Listening at port: ${this.port}`);
+          this.logger.info(`Listening at port: ${this.port}`);
         });
       } catch (err) {
-        this.logger.log("error", err);
-        throw err;
+        this.logger.error(err);
+        return err;
       }
     }
 
     private middlewares(): Promise<any> {
-      try {
-        return new Promise( (resolve, reject) => {
-          this.app.use([
-            this.errorHandler,
-          ]);
-          return resolve();
-        });
-      } catch (err) {
-        this.logger.log("error", err);
-        throw err;
-      }
+      return Promise.resolve(
+        this.app.use([
+          this.errorHandler,
+        ]),
+      );
     }
 
-    private async exposeEndpoints(): Promise<{}> {
-      try {
-        if (!EndpointsApi) {
-          throw errorGenerator("No endpoint found to expose", 500, "");
-        }
-        return new Promise((resolve) => {
-          EndpointsApi.map((endpointApiClass) => {
-            const endpointApi = new endpointApiClass(this.logger);
-            endpointApi.endpoints.map((endpoint) => {
-              const endpointPath = `${endpointApi.path}${endpoint.path}`;
-              this.app[endpoint.method](endpointPath, async (req, res) => {
-                try {
-                  if ( (endpoint.method === "post" || endpoint.method === "put") && !req.body) {
-                    // tslint:disable-next-line:max-line-length
-                    const message = `Requisição sem corpo para método ${endpoint.method.toUpperCase()} no endereço ${endpointPath}`;
-                    this.logger.log("error", message);
-                    return res.status(400).json(message);
-                  }
-                  const result = await endpoint.handler({
-                    body: req.body,
-                    headers: req.headers,
-                    parameters: req.params,
-                  });
-                  return res.json(result);
-                } catch (err) {
-                  return res.json(err.code).send(err);
+    private exposeEndpoints(): Promise<{}> {
+      if (!EndpointsApi) {
+        throw errorGenerator("No endpoint found to expose", 500, "");
+      }
+      return new Promise((resolve) => {
+        EndpointsApi.map((endpointApiClass) => {
+          const endpointApi = new endpointApiClass(this.logger);
+          endpointApi.endpoints.map((endpoint) => {
+            const endpointPath = `${endpointApi.path}${endpoint.path}`;
+            this.app[endpoint.method](endpointPath, async (req, res) => {
+              try {
+                if ( (endpoint.method === "post" || endpoint.method === "put") && !req.body) {
+                  // tslint:disable-next-line:max-line-length
+                  const message = `Requisição sem corpo para método ${endpoint.method.toUpperCase()} no endereço ${endpointPath}`;
+                  this.logger.error(message);
+                  return res.status(400).json(message);
                 }
-              });
+                const result = await endpoint.handler({
+                  body: req.body,
+                  headers: req.headers,
+                  parameters: req.params,
+                });
+                return res.json(result);
+              } catch (err) {
+                return res.json(err.code).send(err);
+              }
             });
           });
-          return resolve();
         });
-      } catch (err) {
-        this.logger.log("error", err);
-        throw err;
-      }
+        return resolve();
+      });
     }
 }
 

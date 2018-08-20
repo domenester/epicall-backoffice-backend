@@ -1,5 +1,5 @@
 import { ErrorRequestHandler } from "express-serve-static-core";
-import ILogger from "../logger/logger.interface";
+import * as winston from "winston";
 
 export interface IErrorGenerator extends Error {
   code: number;
@@ -8,15 +8,15 @@ export interface IErrorGenerator extends Error {
 
 class ErrorHandler {
 
-    private logger: ILogger;
+    private logger: winston.Logger;
 
-    constructor(logger: ILogger) {
+    constructor(logger: winston.Logger) {
         this.logger = logger;
     }
 
     public handler: ErrorRequestHandler = (err: IErrorGenerator, req, res, next) => {
         if (err) {
-            this.logger.log("error", err);
+            this.logger.error(err.message);
             res.status(err.code).send(err.message);
         } else {
           next();
@@ -26,7 +26,7 @@ class ErrorHandler {
 
 export default ErrorHandler;
 
-export const errorHandler = (Logger: ILogger): ErrorRequestHandler => {
+export const errorHandler = (Logger: winston.Logger): ErrorRequestHandler => {
   const e = new ErrorHandler (Logger);
   return e.handler;
 };

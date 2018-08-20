@@ -3,25 +3,15 @@ import ILogger, { winstonLevels } from "./logger.interface";
 
 const { combine, timestamp, label, printf } = winston.format;
 
-class Logger implements ILogger {
+const defaultFormat = printf((info) => `${info.timestamp} [${info.label}] ${info.level}: ${info.message}`);
+const level: winstonLevels = "info";
 
-    public defaultFormat = printf((info) => `${info.timestamp} [${info.label}] ${info.level}: ${info.message}`);
-
-    public level: winstonLevels = "info";
-
-    public logger = winston.createLogger({
-        format: combine(
-            label({ label: "Stack" }),
-            timestamp(),
-            this.defaultFormat,
-          ),
-        level: this.level,
-        transports: [new winston.transports.Console()],
-    });
-
-    public log(level: winstonLevels, message: any): void {
-        this.logger.log({level, message});
-    }
-}
-
-export default new Logger();
+export default (): winston.Logger => winston.createLogger({
+  format: combine(
+      label({ label: "Global" }),
+      timestamp(),
+      defaultFormat,
+    ),
+  level,
+  transports: [new winston.transports.Console()],
+});
