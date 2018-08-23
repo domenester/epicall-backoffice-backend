@@ -40,11 +40,15 @@ class Server {
     }
 
     private middlewares(): Promise<any> {
-      return Promise.resolve(
-        this.app.use([
-          this.errorHandler,
-        ]),
-      );
+      const middlewares = [
+        // Middles go here
+      ];
+
+      if (process.env.NODE_ENV === "development") {
+        middlewares.push(this.errorHandler);
+      }
+
+      return Promise.resolve( this.app.use(middlewares) );
     }
 
     private exposeEndpoints(): Promise<{}> {

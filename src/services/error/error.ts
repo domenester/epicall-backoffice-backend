@@ -15,6 +15,7 @@ class ErrorHandler {
     }
 
     public handler: ErrorRequestHandler = (err: IErrorGenerator, req, res, next) => {
+        // console.log("===========");
         if (err) {
             this.logger.error(err.message);
             res.status(err.code).send(err.message);
