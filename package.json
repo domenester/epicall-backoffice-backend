@@ -4,7 +4,7 @@
   "description": "",
   "main": "dist/main.js",
   "scripts": {
-    "start": "export NODE_ENV=production && npm run build && pm2 start ./dist/main.js",
+    "start": "export NODE_ENV=production && npm run build && node .",
     "dev": "export NODE_ENV=development && npm run build && node .",
     "clean": "rm -rf dist",
     "build": "npm run clean && tsc",
@@ -22,5 +22,9 @@
     "typescript": "^2.9.1",
     "typings": "^2.1.1",
     "winston": "^3.0.0"
+  },
+  "dependencies": {
+    "@types/dotenv": "^4.0.3",
+    "dotenv": "^6.0.0"
   }
 }

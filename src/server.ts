@@ -1,6 +1,8 @@
+import * as dotenv from "dotenv";
 import * as express from "express";
 import {ErrorRequestHandler, RequestHandler} from "express-serve-static-core";
 import * as http from "http";
+import * as path from "path";
 import * as winston from "winston";
 import serverConfigs from "./config/server";
 import {IEndpointAPI} from "./services/endpoint/endpoint.interface";
@@ -8,13 +10,18 @@ import EndpointsApi from "./services/endpoint/index";
 import {errorGenerator, errorHandler, IErrorGenerator} from "./services/error/error";
 import {default as Logger} from "./services/logger/logger";
 
+const env = process.env;
+dotenv.config({ path: path.join(__dirname, "../.env")});
+
 class Server {
 
     public app: express.Application;
 
     private server: http.Server;
 
-    private port: number = serverConfigs.port;
+    private port: number = +env.NODE_PORT || 3000;
+
+    private host: string = env.NODE_HOST;
 
     private logger: winston.Logger;
 
@@ -30,8 +37,8 @@ class Server {
       try {
         await this.middlewares();
         await this.exposeEndpoints();
-        this.server = this.app.listen(this.port, () => {
-          this.logger.info(`Listening at port: ${this.port}`);
+        this.server = this.app.listen(this.port, this.host, () => {
+          this.logger.info(`Listening to: http://${this.host}:${this.port}`);
         });
       } catch (err) {
         this.logger.error(err);
@@ -41,14 +48,16 @@ class Server {
 
     private middlewares(): Promise<any> {
       const middlewares = [
-        // Middles go here
+        // middlewares go here
       ];
 
       if (process.env.NODE_ENV === "development") {
         middlewares.push(this.errorHandler);
       }
 
-      return Promise.resolve( this.app.use(middlewares) );
+      if (middlewares.length > 0) {
+        return Promise.resolve( this.app.use(middlewares) );
+      }
     }
 
     private exposeEndpoints(): Promise<{}> {
