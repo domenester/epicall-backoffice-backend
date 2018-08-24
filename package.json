@@ -8,8 +8,7 @@
     "dev": "export NODE_ENV=development && npm run build && node .",
     "clean": "rm -rf dist",
     "build": "npm run clean && tsc",
-    "push": "git add . && git commit -m \"Saving Progress\" && git push",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "push": "git add . && git commit -m \"Saving Progress\" && git push"
   },
   "author": "",
   "license": "ISC",
