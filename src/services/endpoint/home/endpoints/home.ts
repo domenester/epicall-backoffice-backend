@@ -1,7 +1,6 @@
-import {Request, Response} from "express-serve-static-core";
+import {Request} from "express-serve-static-core";
 import * as winston from "winston";
 import {IEndpoint, IRequest, Verb} from "../../../endpoint/endpoint.interface";
-import {errorGenerator} from "../../../error/error";
 
 export default class Home implements IEndpoint<Request, {}> {
   public path = "/";

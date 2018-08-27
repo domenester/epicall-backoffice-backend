@@ -1,5 +1,5 @@
 import * as winston from "winston";
-import ILogger, { winstonLevels } from "./logger.interface";
+import { winstonLevels } from "./logger.interface";
 
 const { combine, timestamp, label, printf } = winston.format;
 

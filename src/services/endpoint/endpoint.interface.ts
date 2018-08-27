@@ -1,6 +1,3 @@
-import {Request, Response} from "express-serve-static-core";
-import {errorGenerator} from "../error/error";
-
 export type Verb = "get" | "put" | "post";
 
 export interface IRequest<TBody extends {} = null, THeaders extends {} = null, TParameters extends {} = null> {

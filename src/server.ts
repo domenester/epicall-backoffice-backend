@@ -1,13 +1,11 @@
 import * as dotenv from "dotenv";
 import * as express from "express";
-import {ErrorRequestHandler, RequestHandler} from "express-serve-static-core";
+import {ErrorRequestHandler} from "express-serve-static-core";
 import * as http from "http";
 import * as path from "path";
 import * as winston from "winston";
-import serverConfigs from "./config/server";
-import {IEndpointAPI} from "./services/endpoint/endpoint.interface";
 import EndpointsApi from "./services/endpoint/index";
-import {errorGenerator, errorHandler, IErrorGenerator} from "./services/error/error";
+import {errorGenerator, errorHandler} from "./services/error/error";
 import {default as Logger} from "./services/logger/logger";
 
 const env = process.env;

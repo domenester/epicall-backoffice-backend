@@ -1,7 +1,7 @@
 
 import {Request} from "express-serve-static-core";
 import * as winston from "winston";
-import {IEndpoint, IEndpointAPI, IRequest} from "../../endpoint/endpoint.interface";
+import {IEndpoint, IEndpointAPI} from "../../endpoint/endpoint.interface";
 import Home from "./endpoints/home";
 
 class HomeApi implements IEndpointAPI {
