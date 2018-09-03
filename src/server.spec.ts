@@ -8,8 +8,8 @@ import server from "./server";
 
 describe("Testing Server", () => {
 
-  it("should start server", () => {
-    server.start();
+  it("should start server", async () => {
+    await server.start();
   });
 
   it("should request '/' and return any body", async () => {
