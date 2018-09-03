@@ -6,7 +6,7 @@
   "scripts": {
     "start": "if [ ! -d '/node_modules' ]; then npm i; export NODE_ENV=production && npm run build && node .; fi",
     "dev": "export NODE_ENV=development && npm run build && node .",
-    "test": "export NODE_ENV=test && mocha -r ts-node/register src/server.spec.ts",
+    "test": "export NODE_ENV=test && mocha -r ts-node/register src/server.spec.ts --exit",
     "clean": "rm -rf dist",
     "build": "npm run clean && tsc",
     "push": "git add . && git commit -m \"Saving Progress\" && git push"
