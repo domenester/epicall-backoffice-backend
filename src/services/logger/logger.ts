@@ -13,5 +13,6 @@ export default (): winston.Logger => winston.createLogger({
       defaultFormat,
     ),
   level,
+  silent: process.env.NODE_ENV === "test",
   transports: [new winston.transports.Console()],
 });

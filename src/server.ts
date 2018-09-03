@@ -44,6 +44,10 @@ class Server {
       }
     }
 
+    public stop(): void {
+      this.server.close();
+    }
+
     private middlewares(): Promise<any> {
       const middlewares = [
         // middlewares go here
