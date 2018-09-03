@@ -4,9 +4,9 @@ import {ErrorRequestHandler} from "express-serve-static-core";
 import * as http from "http";
 import * as path from "path";
 import * as winston from "winston";
-import EndpointsApi from "./services/endpoint/index";
-import {errorGenerator, errorHandler} from "./services/error/error";
-import {default as Logger} from "./services/logger/logger";
+import EndpointsApi from "./components/endpoint/index";
+import {errorGenerator, errorHandler} from "./components/error/error";
+import {default as Logger} from "./components/logger/logger";
 
 const env = process.env;
 dotenv.config({ path: path.join(__dirname, "../.env")});
