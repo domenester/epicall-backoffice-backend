@@ -7,9 +7,11 @@ import * as winston from "winston";
 import EndpointsApi from "./components/endpoint/index";
 import {errorGenerator, errorHandler} from "./components/error/error";
 import {default as Logger} from "./components/logger/logger";
+import Database from "./database/database";
 
 const env = process.env;
 dotenv.config({ path: path.join(__dirname, "../.env")});
+const database = Database(process.env.DATABASE_URI);
 
 class Server {
 
@@ -35,6 +37,7 @@ class Server {
       try {
         await this.middlewares();
         await this.exposeEndpoints();
+        await database.start();
         this.server = this.app.listen(this.port, this.host, () => {
           this.logger.info(`Listening to: http://${this.host}:${this.port}`);
         });
