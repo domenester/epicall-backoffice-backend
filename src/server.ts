@@ -1,3 +1,5 @@
+import * as bodyParser from "body-parser";
+import { NextHandleFunction } from "connect";
 import * as dotenv from "dotenv";
 import * as express from "express";
 import {ErrorRequestHandler} from "express-serve-static-core";
@@ -52,8 +54,9 @@ class Server {
     }
 
     private middlewares(): Promise<any> {
-      const middlewares = [
-        // middlewares go here
+      const middlewares: Array<ErrorRequestHandler | NextHandleFunction> = [
+        bodyParser.json({ limit: "5mb" }),
+        bodyParser.urlencoded({ extended: true, limit: "5mb" }),
       ];
 
       if (process.env.NODE_ENV === "development") {
@@ -75,22 +78,18 @@ class Server {
           endpointApi.endpoints.map((endpoint) => {
             const endpointPath = `${endpointApi.path}${endpoint.path}`;
             this.app[endpoint.method](endpointPath, async (req, res) => {
-              try {
-                if ( (endpoint.method === "post" || endpoint.method === "put") && !req.body) {
-                  // tslint:disable-next-line:max-line-length
-                  const message = `Requisição sem corpo para método ${endpoint.method.toUpperCase()} no endereço ${endpointPath}`;
-                  this.logger.error(message);
-                  return res.status(400).json(message);
-                }
-                const result = await endpoint.handler({
-                  body: req.body,
-                  headers: req.headers,
-                  parameters: req.params,
-                });
-                return res.json(result);
-              } catch (err) {
-                return res.json(err.code).send(err);
+              if ( (endpoint.method === "post" || endpoint.method === "put") && !req.body) {
+                // tslint:disable-next-line:max-line-length
+                const message = `Requisição sem corpo para método ${endpoint.method.toUpperCase()} no endereço ${endpointPath}`;
+                this.logger.error(message);
+                return res.status(400).json(message);
               }
+              const result = await endpoint.handler({
+                body: req.body,
+                headers: req.headers,
+                parameters: req.params,
+              });
+              return res.json(result);
             });
           });
         });

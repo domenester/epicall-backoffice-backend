@@ -22,7 +22,7 @@ describe("Testing Server", () => {
     expect(body).to.not.be.null;
   });
 
-  it("shoul stop server", () => {
+  it("should stop server", () => {
     server.stop();
   });
 

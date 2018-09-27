@@ -1,6 +1,6 @@
 export type Verb = "get" | "put" | "post";
 
-export interface IRequest<TBody extends {} = null, THeaders extends {} = null, TParameters extends {} = null> {
+export interface IRequest<TBody extends {} = any, THeaders extends {} = any, TParameters extends {} = any> {
   headers?: { [index: string]: string | string[] };
   parameters?: { [index: string]: string };
   body?: TBody;

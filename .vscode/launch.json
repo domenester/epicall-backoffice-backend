@@ -13,6 +13,15 @@
     {
       "type": "node",
       "request": "launch",
+      "name": "Mocha Test",
+      "program": "${workspaceRoot}/node_modules/mocha/bin/_mocha",
+      "args": ["-r", "ts-node/register", "${relativeFile}"],
+      "cwd": "${workspaceRoot}",
+      "runtimeArgs": ["--nolazy", "-r", "ts-node/register"]
+    },
+    {
+      "type": "node",
+      "request": "launch",
       "name": "Launch Program",
       "program": "${workspaceFolder}/src/main.js",
       "preLaunchTask": "tsc: build - tsconfig.json",

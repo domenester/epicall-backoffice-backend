@@ -1,5 +1,5 @@
 {
-  "name": "api-server",
+  "name": "epicall-backoffice-backend",
   "version": "0.0.0",
   "description": "",
   "main": "dist/main.js",
@@ -11,7 +11,7 @@
     "build": "npm run clean && tsc",
     "push": "git add . && git commit -m \"Saving Progress\" && git push"
   },
-  "author": "",
+  "author": "Diogo Domene",
   "license": "ISC",
   "devDependencies": {
     "@types/chai": "^4.1.4",
@@ -32,8 +32,10 @@
     "winston": "^3.0.0"
   },
   "dependencies": {
+    "@types/body-parser": "^1.17.0",
     "@types/dotenv": "^4.0.3",
     "@types/request-promise": "^4.1.42",
+    "body-parser": "^1.18.3",
     "dotenv": "^6.0.0",
     "mongoose": "^5.2.12",
     "request-promise": "^4.2.2"
