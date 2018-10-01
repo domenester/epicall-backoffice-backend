@@ -6,6 +6,7 @@ import * as request from "request-promise";
 import { promisify } from "util";
 import {default as Logger} from "../../../../components/logger/logger";
 import server from "../../../../server";
+import { login as errorMessages } from "../../../error/error-messages";
 import { IRequest } from "../../endpoint.interface";
 import Login from "./login";
 
@@ -47,7 +48,7 @@ describe("Testing Login", async () => {
         password: "lorem",
         username: "ipsum",
     };
-    let response = await request(
+    const response = await request(
       `http://${env.NODE_HOST}:${env.NODE_PORT}/login`,
       {
         body: JSON.stringify(body),
@@ -55,8 +56,8 @@ describe("Testing Login", async () => {
         method: "POST",
         rejectUnauthorized: false,
       },
-    );
-    response = JSON.parse(response);
+    ).catch((e) => JSON.parse(e.error));
     expect(response.code).to.be.equal(401);
+    expect(response.message).to.be.equal(errorMessages.unauthorized);
   });
 });
