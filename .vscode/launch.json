@@ -20,11 +20,15 @@
       "runtimeArgs": ["--nolazy", "-r", "ts-node/register"]
     },
     {
+      "name": "Current TS File",
       "type": "node",
       "request": "launch",
-      "name": "Launch Program",
-      "program": "${workspaceFolder}/src/main.js",
-      "preLaunchTask": "tsc: build - tsconfig.json",
+      "args": ["${relativeFile}"],
+      "runtimeArgs": ["--nolazy", "-r", "ts-node/register"],
+      "sourceMaps": true,
+      "cwd": "${workspaceRoot}",
+      "protocol": "inspector",
+      "program": "${workspaceRoot}/dist/main",
       "outFiles": [
         "${workspaceFolder}/dist/**/*.js"
       ]

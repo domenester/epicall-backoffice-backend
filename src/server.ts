@@ -1,5 +1,6 @@
 import * as bodyParser from "body-parser";
 import { NextHandleFunction } from "connect";
+import * as cors from "cors";
 import * as dotenv from "dotenv";
 import * as express from "express";
 import {ErrorRequestHandler} from "express-serve-static-core";
@@ -7,7 +8,7 @@ import * as http from "http";
 import * as path from "path";
 import * as winston from "winston";
 import EndpointsApi from "./components/endpoint/index";
-import {errorGenerator, errorHandler} from "./components/error/error";
+import {errorGenerator, errorHandler, IErrorGenerator} from "./components/error/error";
 import {default as Logger} from "./components/logger/logger";
 import Database from "./database/database";
 
@@ -61,6 +62,7 @@ class Server {
 
       if (process.env.NODE_ENV === "development") {
         middlewares.push(this.errorHandler);
+        middlewares.push(cors());
       }
 
       if (middlewares.length > 0) {
@@ -89,6 +91,16 @@ class Server {
                 headers: req.headers,
                 parameters: req.params,
               });
+
+              if (result instanceof Error) {
+                const error = result as any;
+                return res.status(error.code).send({
+                  code: error.code,
+                  message: error.message,
+                  stack: error.stack,
+                } as IErrorGenerator);
+              }
+
               return res.json(result);
             });
           });

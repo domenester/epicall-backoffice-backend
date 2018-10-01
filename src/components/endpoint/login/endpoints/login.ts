@@ -25,12 +25,8 @@ export default class Login implements IEndpoint<Request, {}> {
       },
     ).catch( (err) => {
       this.logger.error(`Error requesting for: ${process.env.APP_API}/login`);
-      return err;
+      return errorGenerator("Login ou senha inválido", err.statusCode, "Login");
     });
-
-    if (response.statusCode >= 400) {
-      return errorGenerator(`Error requesting for: ${process.env.APP_API}/login`, response.statusCode, "Login");
-    }
 
     return response;
   }
