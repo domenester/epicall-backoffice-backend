@@ -1,6 +1,7 @@
 import {Request} from "express-serve-static-core";
 import * as request from "request-promise";
 import * as winston from "winston";
+import { LoginService } from "../../../../services";
 import {IEndpoint, IRequest, Verb} from "../../../endpoint/endpoint.interface";
 import { errorGenerator } from "../../../error/error";
 import { login as errorMessage } from "../../../error/error-messages";
@@ -23,23 +24,8 @@ export default class Login implements IEndpoint<Request, {}> {
       return validation;
     }
 
-    const response = await request(
-      `${process.env.APP_API}/login`, {
-        body: JSON.stringify(req.body),
-        headers: {
-          "Content-Type": "application/json",
-        },
-        method: "POST",
-        rejectUnauthorized: false,
-      },
-    ).catch( (err) => {
-      this.logger.error(`Error requesting for: ${process.env.APP_API}/login`);
-      return errorGenerator(
-        errorMessage.unauthorized,
-        err.statusCode,
-        "Login");
-    });
+    const loginService = await LoginService(req.body);
 
-    return response;
+    return loginService;
   }
 }

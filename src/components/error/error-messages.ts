@@ -6,4 +6,12 @@ export const changePassword = {
   unauthorized: "Credenciais inválidas",
 };
 
-export default { login, changePassword };
+export const requestPassword = {
+  emailNotFound: "Email não encontrado",
+};
+
+export default {
+  changePassword,
+  login,
+  requestPassword,
+};

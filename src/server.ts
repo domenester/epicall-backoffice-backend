@@ -32,7 +32,7 @@ class Server {
 
     constructor() {
         this.app = express();
-        this.logger = Logger();
+        this.logger = Logger;
         this.errorHandler = errorHandler(this.logger);
     }
 
