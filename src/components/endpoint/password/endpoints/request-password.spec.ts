@@ -58,7 +58,7 @@ describe("Testing Request Password", async () => {
         rejectUnauthorized: false,
       },
     ).catch((e) => JSON.parse(e.error));
-    expect(response.envelope.to).to.be.equal(validEmail);
+    expect(response.data.envelope.to).to.be.equal(validEmail);
   }).timeout(5000);
 
 });

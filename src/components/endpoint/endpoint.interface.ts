@@ -18,3 +18,10 @@ export interface IEndpointAPI {
   path: string;
   endpoints: Array<IEndpoint<IRequest, {}>>;
 }
+
+export interface IHandlerResponse {
+  data: any;
+  message: string;
+}
+
+export type HandlerResponse = IHandlerResponse | Error;

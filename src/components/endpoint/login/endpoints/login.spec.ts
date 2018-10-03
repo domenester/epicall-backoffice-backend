@@ -37,8 +37,8 @@ describe("Testing Login", async () => {
       },
     );
     response = JSON.parse(response);
-    expect(response.auth_token).to.not.be.null;
-    expect(response.data).to.not.be.null;
+    expect(response.data.auth_token).to.not.be.null;
+    expect(response.data.data).to.not.be.null;
   });
 
   it("should throw error for an invalid user", async () => {

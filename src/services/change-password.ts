@@ -2,7 +2,14 @@ import * as request from "request-promise";
 import { changePassword as errorMessage, errorGenerator } from "../components/error";
 import {default as logger} from "../components/logger/logger";
 
-export const ChangePasswordService = async (body: any): Promise<any> => {
+export interface IChangePasswordServiceInput {
+  userId: string;
+  newPassword: string;
+  password: string;
+  username: string;
+}
+
+export const ChangePasswordService = async (body: IChangePasswordServiceInput): Promise<any> => {
   const response = await request(
     `${process.env.APP_API}/users/${body.userId}/update_password`, {
       body: JSON.stringify({

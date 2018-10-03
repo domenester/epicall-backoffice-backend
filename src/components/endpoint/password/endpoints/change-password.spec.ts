@@ -57,7 +57,7 @@ describe("Testing Change Password", async () => {
         userId: "e4a45df3222c8117121681c58d1a2e59",
         username: "daniel",
     };
-    const response = await request(
+    let response = await request(
       `http://${env.NODE_HOST}:${env.NODE_PORT}${passwordApi.path}${changePassword.path}`,
       {
         body: JSON.stringify(body),
@@ -70,7 +70,8 @@ describe("Testing Change Password", async () => {
       console.log(e.error);
       return JSON.parse(e.error);
     });
-    expect(response).to.be.equal("\"\"");
+    response = JSON.parse(response);
+    expect(response.data).to.be.equal("");
   });
 
   it("should roll back last password change", async () => {
@@ -83,7 +84,7 @@ describe("Testing Change Password", async () => {
         userId: "e4a45df3222c8117121681c58d1a2e59",
         username: "daniel",
     };
-    const response = await request(
+    let response = await request(
       `http://${env.NODE_HOST}:${env.NODE_PORT}${passwordApi.path}${changePassword.path}`,
       {
         body: JSON.stringify(body),
@@ -96,6 +97,7 @@ describe("Testing Change Password", async () => {
       console.log(e.error);
       return e.error;
     });
-    expect(response).to.be.equal("\"\"");
+    response = JSON.parse(response);
+    expect(response.data).to.be.equal("");
   });
 });

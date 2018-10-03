@@ -10,6 +10,10 @@ export const requestPassword = {
   emailNotFound: "Email não encontrado",
 };
 
+export const resetPassword = {
+  error: "Erro ao alterar senha",
+};
+
 export default {
   changePassword,
   login,

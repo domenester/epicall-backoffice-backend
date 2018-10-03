@@ -1,14 +1,14 @@
 import {Request} from "express-serve-static-core";
 import * as request from "request-promise";
 import * as winston from "winston";
-import { ChangePasswordService } from "../../../../services";
+import { ResetPasswordService } from "../../../../services";
 import {HandlerResponse, IEndpoint, IRequest, Verb} from "../../../endpoint/endpoint.interface";
 import { errorGenerator } from "../../../error/error";
 import { changePassword as errorMessage } from "../../../error/error-messages";
-import { ChangePasswordValidation } from "../validation";
+import { ResetPasswordValidation } from "../validation";
 
-export default class ChangePassword implements IEndpoint<Request, {}> {
-  public path = "/change";
+export default class ResetPassword implements IEndpoint<Request, {}> {
+  public path = "/reset";
   public method: Verb = "post";
   public bodySchema = "";
   private logger: winston.Logger;
@@ -18,15 +18,15 @@ export default class ChangePassword implements IEndpoint<Request, {}> {
   public handler = async (req: IRequest): Promise<HandlerResponse> => {
     this.logger.info(`Accessing path: ${this.path}`);
 
-    const validation = await ChangePasswordValidation(req.body);
+    const validation = await ResetPasswordValidation(req.body);
 
     if (validation instanceof Error) {
       return validation;
     }
 
-    const changePasswordService = await ChangePasswordService(req.body);
+    const resetPasswordService = await ResetPasswordService(req.body);
 
-    if (changePasswordService instanceof Error) { return changePasswordService; }
-    return { data: changePasswordService, message: "Senha alterada com sucesso" };
+    if (resetPasswordService instanceof Error) { return resetPasswordService; }
+    return { data: resetPasswordService, message: "Senha alterada com sucesso" };
   }
 }
