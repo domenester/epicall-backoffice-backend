@@ -39,4 +39,23 @@ describe("Testing Request Password", async () => {
     expect(response.message).to.be.equal(errorMessages.emailNotFound);
   });
 
+  it.skip("should send email requesting password if email was found", async () => {
+    const env = process.env;
+    const validEmail = "AnyValidEmail@gmail.com";
+    const body = {
+        email: validEmail,
+    };
+    const requestPassword = new RequestPassword(logger);
+    const response = await request(
+      `http://${env.NODE_HOST}:${env.NODE_PORT}${requestPassword.path}`,
+      {
+        body: JSON.stringify(body),
+        headers: { "Content-Type": "application/json" },
+        method: requestPassword.method,
+        rejectUnauthorized: false,
+      },
+    ).catch((e) => JSON.parse(e.error));
+    expect(response.envelope.to).to.be.equal(validEmail);
+  }).timeout(5000);
+
 });
