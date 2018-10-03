@@ -8,6 +8,7 @@ import {default as logger} from "../../../../components/logger/logger";
 import server from "../../../../server";
 import { changePassword as errorMessages } from "../../../error/error-messages";
 import { IRequest } from "../../endpoint.interface";
+import PasswordApi from "../password.api";
 import ChangePassword from "./change-password";
 
 // tslint:disable-next-line:max-line-length
@@ -25,6 +26,7 @@ describe("Testing Change Password", async () => {
 
   it("should throw error because of invalid password", async () => {
     const env = process.env;
+    const passwordApi = new PasswordApi(logger);
     const changePassword = new ChangePassword(logger);
     const body = {
         newPassword: "123456",
@@ -33,7 +35,7 @@ describe("Testing Change Password", async () => {
         username: "daniel",
     };
     const response = await request(
-      `http://${env.NODE_HOST}:${env.NODE_PORT}${changePassword.path}`,
+      `http://${env.NODE_HOST}:${env.NODE_PORT}${passwordApi.path}${changePassword.path}`,
       {
         body: JSON.stringify(body),
         headers: { "Content-Type": "application/json" },
@@ -47,6 +49,7 @@ describe("Testing Change Password", async () => {
 
   it("should change password", async () => {
     const env = process.env;
+    const passwordApi = new PasswordApi(logger);
     const changePassword = new ChangePassword(logger);
     const body = {
         newPassword: "1234567",
@@ -55,7 +58,7 @@ describe("Testing Change Password", async () => {
         username: "daniel",
     };
     const response = await request(
-      `http://${env.NODE_HOST}:${env.NODE_PORT}${changePassword.path}`,
+      `http://${env.NODE_HOST}:${env.NODE_PORT}${passwordApi.path}${changePassword.path}`,
       {
         body: JSON.stringify(body),
         headers: { "Content-Type": "application/json" },
@@ -72,6 +75,7 @@ describe("Testing Change Password", async () => {
 
   it("should roll back last password change", async () => {
     const env = process.env;
+    const passwordApi = new PasswordApi(logger);
     const changePassword = new ChangePassword(logger);
     const body = {
         newPassword: "123456",
@@ -80,7 +84,7 @@ describe("Testing Change Password", async () => {
         username: "daniel",
     };
     const response = await request(
-      `http://${env.NODE_HOST}:${env.NODE_PORT}${changePassword.path}`,
+      `http://${env.NODE_HOST}:${env.NODE_PORT}${passwordApi.path}${changePassword.path}`,
       {
         body: JSON.stringify(body),
         headers: { "Content-Type": "application/json" },
