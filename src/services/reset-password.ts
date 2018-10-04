@@ -10,7 +10,7 @@ export interface IResetPasswordService {
 export const ResetPasswordService = async (body: IResetPasswordService): Promise<any> => {
   // TODO: Implement API for update password
   // const response = await request(
-  //   `${process.env.APP_API}/resetPasswordByEmail`, {
+  //   `${process.env.APP_API_URL}/resetPasswordByEmail`, {
   //     body: JSON.stringify({
   //       newPassword: body.newPassword,
   //       email: body.email,
@@ -22,7 +22,7 @@ export const ResetPasswordService = async (body: IResetPasswordService): Promise
   //     rejectUnauthorized: false,
   //   },
   // ).catch( (err) => {
-  //   logger.error(`Error requesting for: ${process.env.APP_API}/resetPasswordByEmail`);
+  //   logger.error(`Error requesting for: ${process.env.APP_API_URL}/resetPasswordByEmail`);
   //   return errorGenerator(
   //     errorMessage.error,
   //     err.statusCode,

@@ -9,7 +9,7 @@ export interface ILoginServiceInput {
 
 export const LoginService = async (body: ILoginServiceInput): Promise<any> => {
   const response = await request(
-    `${process.env.APP_API}/login`, {
+    `${process.env.APP_API_URL}/login`, {
       body: JSON.stringify(body),
       headers: {
         "Content-Type": "application/json",
@@ -18,12 +18,16 @@ export const LoginService = async (body: ILoginServiceInput): Promise<any> => {
       rejectUnauthorized: false,
     },
   ).catch( (err) => {
-    logger.error(`Error requesting for: ${process.env.APP_API}/login`);
+    logger.error(`Error requesting for: ${process.env.APP_API_URL}/login`);
     return errorGenerator(
       errorMessage.unauthorized,
       err.statusCode,
       "Login");
   });
-
-  return response;
+  
+  try {
+    return JSON.parse(response);
+  } catch(err) {
+    return response;
+  }
 };

@@ -3,22 +3,16 @@ import { errorGenerator, login as errorMessage } from "../../components/error";
 import {default as logger} from "../../components/logger/logger";
 
 // tslint:disable-next-line:array-type
-export const getByEmail = async (email: string): Promise<Array<any>> => {
+export const getById = async (userId: string): Promise<any> => {
   const response = await request(
-    `${process.env.APP_API_URL}/users`, {
+    `${process.env.APP_API_URL}/users/${userId}`, {
       headers: {
         "Content-Type": "application/json",
       },
       method: "GET",
       rejectUnauthorized: false,
     },
-  ).then( (res) => {
-    const resParsed = JSON.parse(res);
-    if (!resParsed.data || resParsed.data.length < 1) { return []; }
-    return resParsed.data.filter( (user: any) => {
-      return user.email === email;
-    });
-  }).catch( (err) => {
+  ).then( res => res.data || res ).catch( (err) => {
     logger.error(`Error requesting for: ${process.env.APP_API_URL}/users`);
     return errorGenerator(
       err,
@@ -26,5 +20,9 @@ export const getByEmail = async (email: string): Promise<Array<any>> => {
       "GetUserByEmail");
   });
 
-  return response;
+  try {
+    return JSON.parse(response);
+  } catch (err) {
+    return response;
+  }
 };

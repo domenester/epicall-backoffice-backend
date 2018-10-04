@@ -11,7 +11,7 @@ export interface IChangePasswordServiceInput {
 
 export const ChangePasswordService = async (body: IChangePasswordServiceInput): Promise<any> => {
   const response = await request(
-    `${process.env.APP_API}/users/${body.userId}/update_password`, {
+    `${process.env.APP_API_URL}/users/${body.userId}/update_password`, {
       body: JSON.stringify({
         newPassword: body.newPassword,
         password: body.password,
@@ -24,7 +24,7 @@ export const ChangePasswordService = async (body: IChangePasswordServiceInput): 
       rejectUnauthorized: false,
     },
   ).catch( (err) => {
-    logger.error(`Error requesting for: ${process.env.APP_API}/users/<userId>/update_password`);
+    logger.error(`Error requesting for: ${process.env.APP_API_URL}/users/<userId>/update_password`);
     return errorGenerator(
       errorMessage.unauthorized,
       err.statusCode,

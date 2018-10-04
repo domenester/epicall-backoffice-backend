@@ -1,7 +1,7 @@
 import {Request} from "express-serve-static-core";
 import * as request from "request-promise";
 import * as winston from "winston";
-import { LoginService } from "../../../../services";
+import { LoginService, UserService } from "../../../../services";
 import {HandlerResponse, IEndpoint, IRequest, Verb} from "../../../endpoint/endpoint.interface";
 import { errorGenerator } from "../../../error/error";
 import { login as errorMessage } from "../../../error/error-messages";
@@ -28,6 +28,15 @@ export default class Login implements IEndpoint<Request, {}> {
     const loginService = await LoginService(req.body);
 
     if (loginService instanceof Error) { return loginService; }
-    return { data: loginService, message: responseMessages.login };
+
+    const userById = await UserService.getById(loginService.data.owner_id);
+
+    return { 
+      data: { 
+        ...userById.data, 
+        profilePhoto: `${process.env.APP_API}/photos/${loginService.data.owner_id}.jpg`
+      }, 
+      message: responseMessages.login 
+    };
   }
 }
