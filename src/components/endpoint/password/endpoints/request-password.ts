@@ -8,6 +8,7 @@ import {HandlerResponse, IEndpoint, IRequest, Verb} from "../../../endpoint/endp
 import { errorGenerator } from "../../../error/error";
 import { requestPassword as errorMessage } from "../../../error/error-messages";
 import { RequestPasswordValidation } from "../validation";
+import responseMessages from "../../../../config/endpoints-response-messages";
 
 export default class RequestPassword implements IEndpoint<Request, {}> {
   public path = "/request";
@@ -40,6 +41,6 @@ export default class RequestPassword implements IEndpoint<Request, {}> {
     const mailResponse = { emailResponseMocked: true };
 
     if (mailResponse instanceof Error) { return mailResponse; }
-    return { data: mailResponse, message: "Email enviado com sucesso" };
+    return { data: mailResponse, message: responseMessages.requestPassword };
   }
 }

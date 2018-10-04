@@ -6,6 +6,7 @@ import {HandlerResponse, IEndpoint, IRequest, Verb} from "../../../endpoint/endp
 import { errorGenerator } from "../../../error/error";
 import { changePassword as errorMessage } from "../../../error/error-messages";
 import { ChangePasswordValidation } from "../validation";
+import responseMessages from "../../../../config/endpoints-response-messages";
 
 export default class ChangePassword implements IEndpoint<Request, {}> {
   public path = "/change";
@@ -27,6 +28,6 @@ export default class ChangePassword implements IEndpoint<Request, {}> {
     const changePasswordService = await ChangePasswordService(req.body);
 
     if (changePasswordService instanceof Error) { return changePasswordService; }
-    return { data: changePasswordService, message: "Senha alterada com sucesso" };
+    return { data: changePasswordService, message: responseMessages.changePassword };
   }
 }

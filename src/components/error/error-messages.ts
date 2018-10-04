@@ -11,7 +11,8 @@ export const requestPassword = {
 };
 
 export const resetPassword = {
-  error: "Erro ao alterar senha",
+  invalidToken: "Token inválido",
+  expiredToken: "Token expirado"
 };
 
 export default {

@@ -37,7 +37,7 @@ describe("Testing Request Password", async () => {
         rejectUnauthorized: false,
       },
     ).catch((e) => JSON.parse(e.error));
-    expect(response.code).to.be.equal(401);
+    expect(response.code).to.be.equal(400);
     expect(response.message).to.be.equal(errorMessages.emailNotFound);
   });
 

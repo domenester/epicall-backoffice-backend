@@ -6,6 +6,7 @@ import {HandlerResponse, IEndpoint, IRequest, Verb} from "../../../endpoint/endp
 import { errorGenerator } from "../../../error/error";
 import { login as errorMessage } from "../../../error/error-messages";
 import { LoginValidation } from "../validation/login.validation";
+import responseMessages from "../../../../config/endpoints-response-messages";
 
 export default class Login implements IEndpoint<Request, {}> {
   public path = "/login";
@@ -27,6 +28,6 @@ export default class Login implements IEndpoint<Request, {}> {
     const loginService = await LoginService(req.body);
 
     if (loginService instanceof Error) { return loginService; }
-    return { data: loginService, message: "Login efetuado com sucesso"};
+    return { data: loginService, message: responseMessages.login };
   }
 }

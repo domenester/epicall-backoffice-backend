@@ -2,7 +2,12 @@ import * as request from "request-promise";
 import { errorGenerator, login as errorMessage } from "../components/error";
 import {default as logger} from "../components/logger/logger";
 
-export const LoginService = async (body: any): Promise<any> => {
+export interface ILoginServiceInput {
+  username: string;
+  password: string;
+}
+
+export const LoginService = async (body: ILoginServiceInput): Promise<any> => {
   const response = await request(
     `${process.env.APP_API}/login`, {
       body: JSON.stringify(body),

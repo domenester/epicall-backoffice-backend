@@ -4,6 +4,7 @@ import * as winston from "winston";
 import {IEndpoint, IEndpointAPI} from "../../endpoint/endpoint.interface";
 import ChangePassword from "./endpoints/change-password";
 import RequestPassword from "./endpoints/request-password";
+import ResetPassword from "./endpoints/reset-password";
 
 class PasswordApi implements IEndpointAPI {
   public path = "/password";
@@ -14,6 +15,7 @@ class PasswordApi implements IEndpointAPI {
     this.endpoints = [
       new ChangePassword(this.logger),
       new RequestPassword(this.logger),
+      new ResetPassword(this.logger),
     ];
   }
 }
