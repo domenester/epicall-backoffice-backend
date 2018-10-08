@@ -38,7 +38,7 @@ describe("Testing Login", async () => {
     );
     response = JSON.parse(response);
     expect(response.data).to.not.be.null;
-  });
+  }).timeout(3000);
 
   it("should throw error for an invalid user", async () => {
     const env = process.env;
