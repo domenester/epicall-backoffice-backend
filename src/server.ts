@@ -11,6 +11,8 @@ import EndpointsApi from "./components/endpoint/index";
 import {errorGenerator, errorHandler, IErrorGenerator} from "./components/error/error";
 import {default as Logger} from "./components/logger/logger";
 import Database from "./database/database";
+import { default as serverConfigs } from "./config/server";
+import * as multer from "multer";
 
 const env = process.env;
 dotenv.config({ path: path.join(__dirname, "../.env")});
@@ -70,6 +72,14 @@ class Server {
       }
     }
 
+    private requestMiddleware(path: string): express.RequestHandler {
+      switch (path) {
+        case serverConfigs.pathsToMulter.avatar:
+          return multer({ dest: `${__dirname}/` }).single('avatar');
+        default: return ((req, res, next) => { next(); }) as express.RequestHandler;
+      }
+    }
+
     private exposeEndpoints(): Promise<{}> {
       if (!EndpointsApi) {
         throw errorGenerator("No endpoint found to expose", 500, "");
@@ -79,7 +89,7 @@ class Server {
           const endpointApi = new endpointApiClass(this.logger);
           endpointApi.endpoints.map((endpoint) => {
             const endpointPath = `${endpointApi.path}${endpoint.path}`;
-            this.app[endpoint.method](endpointPath, async (req, res) => {
+            this.app[endpoint.method](endpointPath, this.requestMiddleware(endpoint.path), async (req, res) => {
               if ( (endpoint.method === "post" || endpoint.method === "put") && !req.body) {
                 // tslint:disable-next-line:max-line-length
                 const message = `Requisição sem corpo para método ${endpoint.method.toUpperCase()} no endereço ${endpointPath}`;
@@ -87,7 +97,7 @@ class Server {
                 return res.status(400).json(message);
               }
               const result = await endpoint.handler({
-                body: req.body,
+                body: Object.keys(req.body).length > 0 ? req.body : req.files || req.file,
                 headers: req.headers,
                 parameters: req.params,
               });
