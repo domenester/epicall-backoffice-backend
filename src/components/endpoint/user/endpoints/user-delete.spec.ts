@@ -35,7 +35,7 @@ const requestService = async (body: any) => {
   return responseParsed;
 }
 
-describe("Testing User Update", async () => {
+describe("Testing User Delete", async () => {
   
   before( async () => {
     await server.start();
