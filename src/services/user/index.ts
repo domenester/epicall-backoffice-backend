@@ -1,15 +1,21 @@
-import { emailExists } from "./emailExists";
-import { getByEmail } from "./getByEmail";
-import { getById } from "./getById";
-import { getProfilePhoto } from "./getProfilePhoto";
-import { list } from "./list";
-import { updateProfilePicture } from "./updateProfilePicture";
+import { UserEmailExists as emailExists } from "./user-email-exists";
+import { UserByEmail as getByEmail } from "./user-by-email";
+import { UserById as getById } from "./user-by-id";
+import { UserProfilePicture as getProfilePhoto } from "./user-profile-picture";
+import { UserList as list } from "./user-list";
+import { UpdateProfilePicture as updateProfilePicture } from "./update-profile-picture";
+import { UserNew as add } from "./user-new";
+import { UserUpdate as update } from "./user-update";
+import { UserDelete as remove } from "./user-delete";
 
 export const UserService = {
+  add,
+  remove,
   emailExists,
   getByEmail,
   getById,
   getProfilePhoto,
   list,
+  update,
   updateProfilePicture
 };

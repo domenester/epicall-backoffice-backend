@@ -21,7 +21,7 @@ export interface IEndpointAPI {
 
 export interface IHandlerResponse {
   data: any;
-  message: string;
+  message?: string;
 }
 
 export type HandlerResponse = IHandlerResponse | Error;

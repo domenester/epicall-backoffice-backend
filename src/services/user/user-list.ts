@@ -3,7 +3,7 @@ import { errorGenerator, login as errorMessage } from "../../components/error";
 import {default as logger} from "../../components/logger/logger";
 
 // tslint:disable-next-line:array-type
-export const list = async (): Promise<any> => {
+export const UserList = async (): Promise<any> => {
   const response = await request(
     `${process.env.APP_API_URL}/users`, {
       headers: {

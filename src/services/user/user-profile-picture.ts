@@ -1,28 +1,23 @@
 import * as request from "request-promise";
 import { errorGenerator, login as errorMessage } from "../../components/error";
 import {default as logger} from "../../components/logger/logger";
-import * as fs from "fs";
 
 // tslint:disable-next-line:array-type
-export const updateProfilePicture = async (userId: string, file: any): Promise<any> => {
+export const UserProfilePicture = async (userId: string): Promise<any> => {
   const response = await request(
-    `${process.env.APP_API_URL}/upload_photo`, {
+    `${process.env.APP_API}/photos/${userId}.jpg`, {
       headers: {
-        "Content-Type": "multipart/form-data",
+        "Content-Type": "application/json",
       },
-      formData: {
-        id: userId,
-        File: file
-      },
-      method: "POST",
+      method: "GET",
       rejectUnauthorized: false,
     },
   ).then( res => res.data || res ).catch( (err) => {
-    logger.error(`Error requesting for: ${process.env.APP_API_URL}/upload_photo`);
+    logger.error(`Error requesting for: ${process.env.APP_API}/photos/${userId}.jpg`);
     return errorGenerator(
       err,
       err.statusCode,
-      "UpdateProfilePhoto");
+      "GetProfilePhoto");
   });
 
   try {
