@@ -11,7 +11,7 @@ import responseMessages from "../../../../config/endpoints-response-messages";
 export default class Login implements IEndpoint<Request, {}> {
   public path = "/login";
   public method: Verb = "post";
-  public bodySchema = "";
+  public bodySchema = LoginValidation;
   private logger: winston.Logger;
   constructor(logger: winston.Logger) {
     this.logger = logger;
@@ -19,7 +19,7 @@ export default class Login implements IEndpoint<Request, {}> {
   public handler = async (req: IRequest): Promise<HandlerResponse> => {
     this.logger.info(`Accessing path: ${this.path}`);
 
-    const validation = await LoginValidation(req.body);
+    const validation = await this.bodySchema(req.body);
 
     if (validation instanceof Error) {
       return validation;
