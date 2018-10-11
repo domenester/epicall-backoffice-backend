@@ -4,7 +4,7 @@
   "description": "",
   "main": "dist/main.js",
   "scripts": {
-    "start": "if [ ! -d '/node_modules' ]; then npm i; export NODE_ENV=production && npm run build && node .; fi",
+    "start": "if [ ! -d '/node_modules' ]; then npm i; export NODE_ENV=production && npm run build && pm2 start process.yml; fi",
     "dev": "export NODE_ENV=development && npm run build && copyfiles -u 1 src/public/**/* dist/ && node .",
     "test": "export NODE_ENV=test && mocha -r ts-node/register src/**/*.spec.ts --exit",
     "clean": "rm -rf dist",
@@ -50,6 +50,7 @@
     "mongoose": "^5.2.12",
     "multer": "^1.4.0",
     "nodemailer": "^4.6.8",
+    "pm2": "^3.2.2",
     "request-promise": "^4.2.2"
   }
 }
