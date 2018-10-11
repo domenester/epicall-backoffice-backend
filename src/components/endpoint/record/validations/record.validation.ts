@@ -2,16 +2,14 @@ import * as joi from "joi";
 import { validationErrorFunction } from "../../../../utils/validation";
 import { errorGenerator } from "../../../error/error";
 
-const RecordListSchema = {
-  filter: joi.object().keys({
-    userId: joi.string().required().error(validationErrorFunction),
-    ext: joi.string().regex(/^\d+$/).required().max(10).error(validationErrorFunction),
-    date: joi.object().keys({
-      start: joi.date().required(),
-      end: joi.date().required().min(joi.ref('start'))
-    })
-  }).allow([{}, null])
-};
+const RecordListSchema = joi.object().keys({
+  userId: joi.string().optional().error(validationErrorFunction),
+  ext: joi.string().optional().regex(/^\d+$/).max(10).error(validationErrorFunction),
+  date: joi.object().optional().keys({
+    start: joi.date().required(),
+    end: joi.date().required().min(joi.ref('start'))
+  })
+}).allow([{}, null]);
 
 export const RecordListValidation = ( body: any ) => {
   return joi.validate(body, RecordListSchema)

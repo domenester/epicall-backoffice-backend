@@ -59,13 +59,15 @@ class Server {
     private middlewares(): Promise<any> {
       const middlewares: Array<ErrorRequestHandler | NextHandleFunction> = [
         bodyParser.json({ limit: "5mb" }),
-        bodyParser.urlencoded({ extended: true, limit: "5mb" }),
+        bodyParser.urlencoded({ extended: true, limit: "5mb" })
       ];
 
       if (process.env.NODE_ENV === "development") {
         middlewares.push(this.errorHandler);
         middlewares.push(cors());
       }
+
+      this.app.use('/public', express.static(__dirname + '/public'));
 
       if (middlewares.length > 0) {
         return Promise.resolve( this.app.use(middlewares) );
@@ -99,7 +101,7 @@ class Server {
               const result = await endpoint.handler({
                 body: Object.keys(req.body).length > 0 ? req.body : req.files || req.file,
                 headers: req.headers,
-                parameters: req.params,
+                parameters: req.query,
               });
 
               if (result instanceof Error) {

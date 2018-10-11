@@ -1,7 +1,7 @@
 import {Request} from "express-serve-static-core";
 import * as winston from "winston";
 import {IEndpoint, IRequest, Verb, HandlerResponse} from "../../../endpoint/endpoint.interface";
-import { UserService } from "../../../../services";
+import { RecordService } from "../../../../services";
 import responseMessages from "../../../../config/endpoints-response-messages";
 import { RecordListValidation } from "../validations/record.validation";
 
@@ -22,9 +22,9 @@ export default class RecordList implements IEndpoint<Request, {}> {
       return validation;
     }
 
-    const listUser = await UserService.list();
-    if (listUser instanceof Error) { return listUser; }
+    const listRecord = await RecordService.list(req.parameters || {});
+    if (listRecord instanceof Error) { return listRecord; }
 
-    return {data: listUser, message: responseMessages.userList};
+    return {data: listRecord};
   }
 }

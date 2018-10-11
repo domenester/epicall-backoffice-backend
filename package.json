@@ -5,7 +5,7 @@
   "main": "dist/main.js",
   "scripts": {
     "start": "if [ ! -d '/node_modules' ]; then npm i; export NODE_ENV=production && npm run build && node .; fi",
-    "dev": "export NODE_ENV=development && npm run build && node .",
+    "dev": "export NODE_ENV=development && npm run build && copyfiles -u 1 src/public/**/* dist/ && node .",
     "test": "export NODE_ENV=test && mocha -r ts-node/register src/**/*.spec.ts --exit",
     "clean": "rm -rf dist",
     "build": "npm run clean && tsc",
@@ -22,6 +22,7 @@
     "@types/request": "^2.47.1",
     "@types/winston": "^2.3.9",
     "chai": "^4.1.2",
+    "copyfiles": "^2.1.0",
     "express": "^4.16.3",
     "mocha": "^5.2.0",
     "request": "^2.88.0",

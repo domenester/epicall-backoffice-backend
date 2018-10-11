@@ -13,6 +13,10 @@ import RecordApi from "../record.api";
 
 describe("Testing Records", async () => {
 
+  const env = process.env;
+  const recordApi = new RecordApi(logger);
+  const recordList = new RecordList(logger);
+
   before( async () => {
     await server.start();
   });
@@ -22,9 +26,6 @@ describe("Testing Records", async () => {
   });
 
   it("should return all records", async () => {
-    const env = process.env;
-    const recordApi = new RecordApi(logger);
-    const recordList = new RecordList(logger);
 
     let response = await request(
       `http://${env.NODE_HOST}:${env.NODE_PORT}${recordApi.path}${recordList.path}`,
@@ -33,6 +34,6 @@ describe("Testing Records", async () => {
       },
     );
     response = JSON.parse(response);
-    expect(response.data).to.be.not.null;
+    expect(response.data.length).to.be.gte(0);
   });
 });
