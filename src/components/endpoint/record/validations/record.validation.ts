@@ -5,10 +5,8 @@ import { errorGenerator } from "../../../error/error";
 const RecordListSchema = joi.object().keys({
   userId: joi.string().optional().error(validationErrorFunction),
   ext: joi.string().optional().regex(/^\d+$/).max(10).error(validationErrorFunction),
-  date: joi.object().optional().keys({
-    start: joi.date().required(),
-    end: joi.date().required().min(joi.ref('start'))
-  })
+  start: joi.date().optional().error(validationErrorFunction),
+  end: joi.date().optional().min(joi.ref('start')).error(validationErrorFunction)
 }).allow([{}, null]);
 
 export const RecordListValidation = ( body: any ) => {
