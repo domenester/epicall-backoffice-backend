@@ -9,15 +9,14 @@ export const UserByEmail = async (email: string): Promise<Array<any>> => {
       headers: {
         "Content-Type": "application/json",
       },
-      method: "GET",
+      method: "POST",
+      body: JSON.stringify({ email }),
       rejectUnauthorized: false,
     },
   ).then( (res) => {
     const resParsed = JSON.parse(res);
     if (!resParsed.data || resParsed.data.length < 1) { return []; }
-    return resParsed.data.filter( (user: any) => {
-      return user.email === email;
-    });
+    return resParsed.data;
   }).catch( (err) => {
     logger.error(`Error requesting for: ${process.env.APP_API_URL}/users`);
     return errorGenerator(

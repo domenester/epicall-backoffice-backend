@@ -43,7 +43,7 @@ describe("Testing Request Password", async () => {
 
   it.skip("should send email requesting password if email was found", async () => {
     const env = process.env;
-    const validEmail = "AnyValidEmail@gmail.com";
+    const validEmail = "daniel@itau.com.br";
     const body = {
         email: validEmail,
     };
@@ -60,5 +60,4 @@ describe("Testing Request Password", async () => {
     ).catch((e) => JSON.parse(e.error));
     expect(response.data.envelope.to).to.be.equal(validEmail);
   }).timeout(5000);
-
 });

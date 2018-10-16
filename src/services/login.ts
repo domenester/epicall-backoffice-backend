@@ -28,6 +28,6 @@ export const LoginService = async (body: ILoginServiceInput): Promise<any> => {
   try {
     return JSON.parse(response);
   } catch(err) {
-    return response;
+    return response || true;
   }
 };
