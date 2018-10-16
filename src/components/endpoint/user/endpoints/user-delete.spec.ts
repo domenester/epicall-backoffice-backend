@@ -45,7 +45,7 @@ describe("Testing User Delete", async () => {
     server.stop();
   });
 
-  it("should delete an user", async () => {
+  it.skip("should delete an user", async () => {
 
     const body = {
       userId: "e4a45df3222c8117121681c58d1a2e59"

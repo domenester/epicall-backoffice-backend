@@ -1,4 +1,4 @@
-export type Verb = "get" | "put" | "post";
+export type Verb = "get" | "put" | "post" | "delete";
 
 export interface IRequest<TBody extends {} = any, THeaders extends {} = any, TParameters extends {} = any> {
   headers?: { [index: string]: string | string[] };

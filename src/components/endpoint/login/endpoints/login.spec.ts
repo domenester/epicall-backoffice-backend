@@ -9,6 +9,7 @@ import server from "../../../../server";
 import { login as errorMessages } from "../../../error/error-messages";
 import { IRequest } from "../../endpoint.interface";
 import Login from "./login";
+import { userIdDefault, userPasswordDefault, usernameDefault } from "../../../../mocks";
 
 describe("Testing Login", async () => {
 
@@ -24,8 +25,8 @@ describe("Testing Login", async () => {
     const env = process.env;
     const login = new Login(logger);
     const body = {
-        password: "123456",
-        username: "daniel",
+        password: userPasswordDefault,
+        username: usernameDefault,
     };
     let response = await request(
       `http://${env.NODE_HOST}:${env.NODE_PORT}${login.path}`,

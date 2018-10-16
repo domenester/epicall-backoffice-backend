@@ -7,7 +7,7 @@ import { UserDeleteValidation } from "../validations/user-delete.validation";
 
 export default class UserDelete implements IEndpoint<Request, {}> {
   public path = "/delete";
-  public method: Verb = "post";
+  public method: Verb = "delete";
   public bodySchema = "";
   private logger: winston.Logger;
   constructor(logger: winston.Logger) {
@@ -16,13 +16,13 @@ export default class UserDelete implements IEndpoint<Request, {}> {
   public handler = async (req: IRequest): Promise<HandlerResponse> => {
     this.logger.info(`Accessing path: ${this.path}`);
 
-    const validation = await UserDeleteValidation(req.body);
+    const validation = await UserDeleteValidation(req.parameters);
 
     if (validation instanceof Error) {
       return validation;
     }
 
-    const userDelete = await UserService.remove(req.body.userId);
+    const userDelete = await UserService.remove(req.parameters.userId);
     if (userDelete instanceof Error) { return userDelete; }
 
     return {data: userDelete, message: responseMessages.userDelete};

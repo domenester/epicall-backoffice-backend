@@ -52,9 +52,9 @@ describe("Testing User Update", async () => {
       user: {
         name: "Valid Name",
         racf: "Valid Racf",
-        ext: "12345",
+        extension: "12345",
         email: "validemail@valid.com",
-        section: "Valid Section",
+        department: "Valid department",
         perfil: "Administrador"
       }
     };
@@ -84,9 +84,9 @@ describe("Testing User Update", async () => {
       user: {
         name: "Valid Name",
         racf: "Valid Racf",
-        ext: "12345",
+        extension: "12345",
         email: "validemail@valid.com",
-        section: "Valid Section",
+        department: "Valid department",
         perfil: "Administrador"
       }
     };

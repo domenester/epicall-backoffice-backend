@@ -7,7 +7,7 @@ import { UserNewValidation } from "../validations/user-new.validation";
 
 export default class UserNew implements IEndpoint<Request, {}> {
   public path = "/new";
-  public method: Verb = "post";
+  public method: Verb = "put";
   public bodySchema = "";
   private logger: winston.Logger;
   constructor(logger: winston.Logger) {

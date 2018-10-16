@@ -1,9 +1,11 @@
+import { userIdDefault } from "../../mocks";
+
 export default () => ([
   {
     id: "audio1",
     participants: [
       {
-        id: "e4a45df3222c8117121681c58d1a2e59",
+        id: userIdDefault,
         name: "Daniel"
       }
     ],
@@ -19,7 +21,7 @@ export default () => ([
     id: "video1",
     participants: [
       {
-        id: "e4a45df3222c8117121681c58d1a2e59",
+        id: userIdDefault,
         name: "Daniel"
       }
     ],

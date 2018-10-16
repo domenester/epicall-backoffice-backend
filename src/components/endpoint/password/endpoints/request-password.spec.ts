@@ -10,6 +10,7 @@ import { requestPassword as errorMessages } from "../../../error/error-messages"
 import { IRequest } from "../../endpoint.interface";
 import PasswordApi from "../password.api";
 import { default as RequestPassword } from "./request-password";
+import { usernameDefault } from "../../../../mocks";
 
 describe("Testing Request Password", async () => {
 
@@ -43,7 +44,7 @@ describe("Testing Request Password", async () => {
 
   it.skip("should send email requesting password if email was found", async () => {
     const env = process.env;
-    const validEmail = "daniel@itau.com.br";
+    const validEmail = usernameDefault;
     const body = {
         email: validEmail,
     };

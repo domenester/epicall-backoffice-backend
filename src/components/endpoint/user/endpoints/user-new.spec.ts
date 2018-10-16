@@ -7,9 +7,12 @@ import { promisify } from "util";
 import {default as logger} from "../../../../components/logger/logger";
 import server from "../../../../server";
 import UserNew from "./user-new";
+import UserDelete from "./user-delete";
 import UserApi from "../user.api";
 import enums from "../enums";
 import { JsonWebTokenError } from "jsonwebtoken";
+import responseMessages from "../../../../config/endpoints-response-messages";
+import { IUser } from "../../../../interfaces";
 
 const requestService = async (body: any) => {
   const env = process.env;
@@ -36,7 +39,9 @@ const requestService = async (body: any) => {
 }
 
 describe("Testing User New", async () => {
-  
+
+  let userIdAdded: string;
+
   before( async () => {
     await server.start();
   });
@@ -47,12 +52,12 @@ describe("Testing User New", async () => {
 
   it("should throw error because name is empty", async () => {
 
-    const body = {
+    const body: IUser = {
       name: "",
       racf: "Valid Racf",
-      ext: "12345",
+      extension: "12345",
       email: "validemail@valid.com",
-      section: "Valid Section",
+      department: "Valid department",
       perfil: "Administrador"
     };
 
@@ -63,12 +68,12 @@ describe("Testing User New", async () => {
 
   it("should throw error because racf is empty", async () => {
 
-    const body = {
+    const body: IUser = {
       name: "Valid Name",
       racf: "",
-      ext: "12345",
+      extension: "12345",
       email: "validemail@valid.com",
-      section: "Valid Section",
+      department: "Valid department",
       perfil: "Administrador"
     };
 
@@ -77,14 +82,14 @@ describe("Testing User New", async () => {
     expect(response.code).to.be.equal(401);
   });
 
-  it("should throw error because ext is empty", async () => {
+  it("should throw error because extension is empty", async () => {
 
-    const body = {
+    const body: IUser = {
       name: "Valid Name",
       racf: "Valid Racf",
-      ext: "",
+      extension: "",
       email: "validemail@valid.com",
-      section: "Valid Section",
+      department: "Valid department",
       perfil: "Administrador"
     };
 
@@ -95,12 +100,12 @@ describe("Testing User New", async () => {
 
   it("should throw error because email is invalid", async () => {
 
-    const body = {
+    const body: IUser = {
       name: "Valid Name",
       racf: "Valid Racf",
-      ext: "12345",
+      extension: "12345",
       email: "validemail@valid.",
-      section: "Valid Section",
+      department: "Valid department",
       perfil: "Administrador"
     };
 
@@ -109,14 +114,14 @@ describe("Testing User New", async () => {
     expect(response.code).to.be.equal(401);
   });
 
-  it("should throw error because section is empty", async () => {
+  it("should throw error because department is empty", async () => {
 
-    const body = {
+    const body: IUser = {
       name: "Valid Name",
       racf: "Valid Racf",
-      ext: "12345",
+      extension: "12345",
       email: "validemail@valid.com",
-      section: "",
+      department: "",
       perfil: "Administrador"
     };
 
@@ -127,12 +132,12 @@ describe("Testing User New", async () => {
 
   it("should throw error because perfil value isn't in enum", async () => {
 
-    const body = {
+    const body: IUser = {
       name: "Valid Name",
       racf: "Valid Racf",
-      ext: "12345",
+      extension: "12345",
       email: "validemail@valid.com",
-      section: "Valid Section",
+      department: "Valid department",
       perfil: "Anyvalue"
     };
 
@@ -143,17 +148,40 @@ describe("Testing User New", async () => {
 
   it("should add new user", async () => {
 
-    const body = {
+    const body: IUser = {
       name: "Valid Name",
-      racf: "Valid Racf",
-      ext: "12345",
+      racf: "ValidRacf",
+      extension: "12345",
       email: "validemail@valid.com",
-      section: "Valid Section",
+      department: "Valid department",
       perfil: "Administrador"
     };
 
     let response = await requestService(body);
+    userIdAdded = response.data.id;
+    expect(response.data).to.not.be.null;
+    expect(response.message).to.be.equal(responseMessages.userNew);
+  });
 
-    expect(response.data).to.be.deep.equal('Not implemented yet');
+  it("should remove user added", async () => {
+
+    const env = process.env;
+    const userApi = new UserApi(logger);
+    const userDelete = new UserDelete(logger);
+
+    let response = await request(
+      `http://${env.NODE_HOST}:${env.NODE_PORT}${userApi.path}${userDelete.path}?userId=${userIdAdded}`,
+      {
+        method: userDelete.method,
+        headers: { "Content-Type": "application/json" },
+        rejectUnauthorized: false
+      },
+    ).catch((e) => {
+      return e;
+    });
+
+    if ( response instanceof Error ) throw response;
+
+    expect(response).to.not.be.true;
   });
 });
