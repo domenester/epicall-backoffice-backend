@@ -14,7 +14,7 @@ export const UserById = async (userId: string): Promise<any> => {
       rejectUnauthorized: false,
     },
   ).then( res => {
-    return userNormalizer(JSON.parse(res.data));
+    return userNormalizer(JSON.parse(res));
   }).catch( (err) => {
     logger.error(`Error requesting for: ${process.env.APP_API_URL}/users`);
     return errorGenerator(

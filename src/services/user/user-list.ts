@@ -15,7 +15,7 @@ export const UserList = async (): Promise<any> => {
     },
   ).then( res => {
     let resParsed = JSON.parse(res);
-    return resParsed.data.map( (u: any) => userNormalizer(u)) || [];
+    return resParsed.map( (u: any) => userNormalizer(u)) || [];
   }).catch( (err) => {
     logger.error(`Error requesting for: ${process.env.APP_API_URL}/users`);
     return errorGenerator(
