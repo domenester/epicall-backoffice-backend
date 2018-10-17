@@ -1,6 +1,7 @@
 import * as request from "request-promise";
 import { errorGenerator, login as errorMessage } from "../../components/error";
 import {default as logger} from "../../components/logger/logger";
+import userNormalizer from "../../normalizer/user.normalizer";
 
 // tslint:disable-next-line:array-type
 export const UserById = async (userId: string): Promise<any> => {
@@ -12,7 +13,9 @@ export const UserById = async (userId: string): Promise<any> => {
       method: "GET",
       rejectUnauthorized: false,
     },
-  ).then( res => res.data || res ).catch( (err) => {
+  ).then( res => {
+    return userNormalizer(JSON.parse(res.data));
+  }).catch( (err) => {
     logger.error(`Error requesting for: ${process.env.APP_API_URL}/users`);
     return errorGenerator(
       err,
@@ -20,9 +23,5 @@ export const UserById = async (userId: string): Promise<any> => {
       "GetUserById");
   });
 
-  try {
-    return JSON.parse(response);
-  } catch (err) {
-    return response;
-  }
+  return response;
 };

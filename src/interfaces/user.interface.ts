@@ -1,8 +1,11 @@
 export interface IUser {
-  racf: string,
-  email: string,
-  name: string,
-  department: string,
-  extension: string,
-  perfil: string
+  id: string;
+  name: string;
+  lastName: string;
+  fullName: string;
+  username: string;
+  department: string;
+  extension: string;
+  profile: string;
+  profilePhoto: string;
 }

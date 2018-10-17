@@ -32,10 +32,7 @@ export default class Login implements IEndpoint<Request, {}> {
     const userById = await UserService.getById(loginService.data.owner_id);
 
     return { 
-      data: { 
-        ...userById.data, 
-        profilePhoto: `${process.env.APP_API}/photos/${loginService.data.owner_id}.jpg`
-      }, 
+      data: userById, 
       message: responseMessages.login 
     };
   }
