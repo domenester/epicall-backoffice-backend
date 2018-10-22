@@ -12,7 +12,7 @@ import UserApi from "../user.api";
 import enums from "../enums";
 import { JsonWebTokenError } from "jsonwebtoken";
 import responseMessages from "../../../../config/endpoints-response-messages";
-import { IUser } from "../../../../interfaces";
+import { IUserNew } from "../../../../interfaces";
 
 const requestService = async (body: any) => {
   const env = process.env;
@@ -52,7 +52,7 @@ describe("Testing User New", async () => {
 
   it("should throw error because name is empty", async () => {
 
-    const body: IUser = {
+    const body: IUserNew = {
       name: "",
       racf: "Valid Racf",
       extension: "12345",
@@ -68,7 +68,7 @@ describe("Testing User New", async () => {
 
   it("should throw error because racf is empty", async () => {
 
-    const body: IUser = {
+    const body: IUserNew = {
       name: "Valid Name",
       racf: "",
       extension: "12345",
@@ -84,7 +84,7 @@ describe("Testing User New", async () => {
 
   it("should throw error because extension is empty", async () => {
 
-    const body: IUser = {
+    const body: IUserNew = {
       name: "Valid Name",
       racf: "Valid Racf",
       extension: "",
@@ -100,7 +100,7 @@ describe("Testing User New", async () => {
 
   it("should throw error because email is invalid", async () => {
 
-    const body: IUser = {
+    const body: IUserNew = {
       name: "Valid Name",
       racf: "Valid Racf",
       extension: "12345",
@@ -116,7 +116,7 @@ describe("Testing User New", async () => {
 
   it("should throw error because department is empty", async () => {
 
-    const body: IUser = {
+    const body: IUserNew = {
       name: "Valid Name",
       racf: "Valid Racf",
       extension: "12345",
@@ -132,7 +132,7 @@ describe("Testing User New", async () => {
 
   it("should throw error because perfil value isn't in enum", async () => {
 
-    const body: IUser = {
+    const body: IUserNew = {
       name: "Valid Name",
       racf: "Valid Racf",
       extension: "12345",
@@ -148,7 +148,7 @@ describe("Testing User New", async () => {
 
   it("should add new user", async () => {
 
-    const body: IUser = {
+    const body: IUserNew = {
       name: "Valid Name",
       racf: "ValidRacf",
       extension: "12345",
