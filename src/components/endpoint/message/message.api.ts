@@ -2,18 +2,18 @@
 import {Request} from "express-serve-static-core";
 import * as winston from "winston";
 import {IEndpoint, IEndpointAPI} from "../../endpoint/endpoint.interface";
-import Home from "./endpoints/home";
+import Message from "./endpoints/message-list";
 
-class HomeApi implements IEndpointAPI {
-  public path = "";
+class MessageApi implements IEndpointAPI {
+  public path = "/messages";
   public endpoints: Array<IEndpoint<Request, any>>;
   private logger: winston.Logger;
   constructor(logger: winston.Logger) {
     this.logger = logger;
     this.endpoints = [
-      new Home(this.logger),
+      new Message(this.logger),
     ];
   }
 }
 
-export default HomeApi;
+export default MessageApi;
