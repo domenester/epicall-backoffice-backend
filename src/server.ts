@@ -10,7 +10,7 @@ import * as winston from "winston";
 import EndpointsApi from "./components/endpoint/index";
 import {errorGenerator, errorHandler, IErrorGenerator} from "./components/error/error";
 import {default as Logger} from "./components/logger/logger";
-import Database from "./database/database";
+import Database from "./database";
 import { default as serverConfigs } from "./config/server";
 import * as multer from "multer";
 
@@ -42,7 +42,7 @@ class Server {
       try {
         await this.middlewares();
         await this.exposeEndpoints();
-        // await database.start();
+        await database.start();
         this.server = this.app.listen(this.port, this.host, () => {
           this.logger.info(`Listening to: http://${this.host}:${this.port}`);
         });
