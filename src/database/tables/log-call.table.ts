@@ -17,6 +17,7 @@ export class LogCall {
     const query = await this.client.query(
       `CREATE TABLE IF NOT EXISTS ${LOG_CALL.name} (
         ${fields.id.value} UUID NOT NULL PRIMARY KEY,
+        ${fields.createdAt.value} TIMESTAMP NOT NULL DEFAULT NOW(),
         ${fields.userIdFrom.value} UUID NOT NULL,
         ${fields.userIdTo.value} UUID NOT NULL,
         ${fields.type.value} INTEGER NOT NULL,

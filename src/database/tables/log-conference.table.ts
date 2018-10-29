@@ -17,6 +17,7 @@ export class LogConference {
     const query = await this.client.query(
       `CREATE TABLE IF NOT EXISTS ${LOG_CONFERENCE.name} (
         ${fields.id.value} UUID NOT NULL PRIMARY KEY,
+        ${fields.createdAt.value} TIMESTAMP NOT NULL DEFAULT NOW(),
         ${fields.userIdFrom.value} UUID NOT NULL,
         ${fields.startedAt.value} TIMESTAMP NOT NULL,
         ${fields.endedAt.value} TIMESTAMP NOT NULL,
@@ -29,7 +30,7 @@ export class LogConference {
   }
 
   async drop() {
-    const query = await this.client.query(`DROP TABLE ${LOG_CONFERENCE.name}`);
+    const query = await this.client.query(`DROP TABLE ${LOG_CONFERENCE.name} cascade`);
     return query;
   }
 }

@@ -17,7 +17,11 @@
       "program": "${workspaceRoot}/node_modules/mocha/bin/_mocha",
       "args": ["-r", "ts-node/register", "${relativeFile}"],
       "cwd": "${workspaceRoot}",
-      "runtimeArgs": ["--nolazy", "-r", "ts-node/register"]
+      "runtimeArgs": ["--nolazy", "-r", "ts-node/register"],
+      "env": {
+        "NODE_ENV": "test",
+        "PORT": "3000"
+      }
     },
     {
       "name": "Current TS File",

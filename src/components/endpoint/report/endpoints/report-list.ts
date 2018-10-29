@@ -1,8 +1,10 @@
 import {Request} from "express-serve-static-core";
+import { Client } from "pg";
 import * as winston from "winston";
 import {IEndpoint, IRequest, Verb} from "../../../endpoint/endpoint.interface";
 import { ReportListValidation } from "../validations/report-list.validation";
-import { ReportService } from "../../../../services";
+import { ReportQueries } from "../../../../database/queries";
+import { errorGenerator } from "../../../error";
 
 export default class Report implements IEndpoint<Request, {}> {
   public path = "/list";
@@ -21,9 +23,19 @@ export default class Report implements IEndpoint<Request, {}> {
       return validation;
     }
 
-    const listReport = await ReportService.list(req.parameters || {});
-    if (listReport instanceof Error) { return listReport; }
+    const client = new Client(process.env.DATABASE_URI);
+    client.connect().catch(err => errorGenerator(err));
+    const reportQueries = new ReportQueries(client);
+    const queryResult = await reportQueries.getAll();
+    
+    if (queryResult instanceof Error) { 
+      return errorGenerator(
+        queryResult.message,
+        500,
+        queryResult.stack
+      );
+    }
 
-    return {data: listReport};
+    return {data: queryResult.rows || []};
   }
 }

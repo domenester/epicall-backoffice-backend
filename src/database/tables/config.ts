@@ -1,18 +1,25 @@
+const generateTableName = (tableName: string) => {
+  const { NODE_ENV } = process.env;
+  if ( NODE_ENV === "test" || !NODE_ENV ) return `${tableName}_mock`;
+  return tableName;
+}
+
 export const LOG_ACCESS = {
-  name: "log_acesso",
+  name: generateTableName("log_acesso"),
   fields: {
     id: { value: "id", type: "UUID" },
     userId: { value: "usuario", type: "UUID" },
-    createdAt: { value: "data", type: "DATE" },
+    createdAt: { value: "created_at", type: "DATE" },
     isLogoff: { value: "is_logoff", type: "BOOLEAN" }
   }
 };
 
 export const LOG_CALL = {
-  name: "log_chamada",
+  name: generateTableName("log_chamada"),
   fields: {
     id: { value: "id", type: "UUID" },
     userIdFrom: { value: "usuario_origem", type: "UUID" },
+    createdAt: { value: "created_at", type: "DATE" },
     userIdTo: { value: "usuario_destino", type: "UUID" },
     type: { value: "tipo_chamada", type: "INT" },
     startedAt: { value: "data_inicio", type: "DATE" },
@@ -23,9 +30,10 @@ export const LOG_CALL = {
 };
 
 export const LOG_CONFERENCE = {
-  name: "log_conferencia",
+  name: generateTableName("log_conferencia"),
   fields: {
     id: { value: "id", type: "UUID" },
+    createdAt: { value: "created_at", type: "DATE" },
     userIdFrom: { value: "usuario_origem", type: "UUID" },
     startedAt: { value: "data_inicio", type: "DATE" },
     endedAt: { value: "data_final", type: "DATE" },
@@ -35,9 +43,10 @@ export const LOG_CONFERENCE = {
 };
 
 export const LOG_CONFERENCE_PARTICIPANT = {
-  name: "log_conferencia_participante",
+  name: generateTableName("log_conferencia_participante"),
   fields: {
     id: { value: "id", type: "UUID" },
+    createdAt: { value: "created_at", type: "DATE" },
     idConference: { value: "log_conferencia", type: "UUID" },
     userId: { value: "usuario", type: "UUID" },
     gotInAt: { value: "data_entrada", type: "DATE" },

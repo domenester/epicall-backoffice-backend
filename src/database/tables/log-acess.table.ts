@@ -1,5 +1,5 @@
 import { Client } from "pg";
-import { LOG_ACCESS } from "./config";
+import { LOG_ACCESS, LOG_CALL, LOG_CONFERENCE } from "./config";
 import { errorGenerator } from "../../components/error";
 
 export class LogAccess {
@@ -18,7 +18,7 @@ export class LogAccess {
       `CREATE TABLE IF NOT EXISTS ${LOG_ACCESS.name} (
         ${fields.id.value} UUID NOT NULL PRIMARY KEY,
         ${fields.userId.value} UUID NOT NULL,
-        ${fields.createdAt.value} TIMESTAMP NOT NULL,
+        ${fields.createdAt.value} TIMESTAMP NOT NULL DEFAULT NOW(),
         ${fields.isLogoff.value} BOOLEAN NOT NULL
       )`
     ).catch(err => err);

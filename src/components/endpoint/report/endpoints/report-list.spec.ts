@@ -10,6 +10,9 @@ import { login as errorMessages } from "../../../error/error-messages";
 import { IRequest } from "../../endpoint.interface";
 import ReportList from "./report-list";
 import ReportApi from "../report.api";
+import { Client } from "pg";
+import { errorGenerator } from "../../../error";
+import { dropTables } from "../../../../database";
 
 describe("Testing Reports", async () => {
 
@@ -22,6 +25,9 @@ describe("Testing Reports", async () => {
   });
 
   after( async () => {
+    const client = new Client(process.env.DATABASE_URI);
+    client.connect().catch(err => errorGenerator(err));
+    await dropTables(client);
     server.stop();
   });
 
@@ -34,6 +40,6 @@ describe("Testing Reports", async () => {
       },
     );
     response = JSON.parse(response);
-    expect(response.data).to.be.equal("Not implemented yet");
+    expect(response.data.length).to.be.equal(0);
   });
 });

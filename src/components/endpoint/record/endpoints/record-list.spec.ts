@@ -34,6 +34,6 @@ describe("Testing Records", async () => {
       },
     );
     response = JSON.parse(response);
-    expect(response.data.length).to.be.gte(0);
+    expect(response.data.length).to.be.gte(2);
   });
 });
