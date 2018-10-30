@@ -5,7 +5,19 @@ import {IEndpoint, IRequest, Verb} from "../../../endpoint/endpoint.interface";
 import { ReportListValidation } from "../validations/report-list.validation";
 import { ReportQueries } from "../../../../database/queries";
 import { errorGenerator } from "../../../error";
+import { IReportList } from "../../../../interfaces/report.interface";
 
+const normalizeReport = (report: any) => ({
+  createdAt: report.createdat,
+  loginCount: report.logincount,
+  timeLogged: report.timelogged,
+  audioCount: report.audiocount || 0,
+  videoCount: report.videocount || 0,
+  conferenceCount: report.confcount || 0,
+  audioDuration: report.audioduration || {},
+  videoDuration: report.videoduration || {},
+  conferenceDuration: report.confduration || {}
+} as IReportList);
 export default class Report implements IEndpoint<Request, {}> {
   public path = "/list";
   public method: Verb = "get";
@@ -19,9 +31,7 @@ export default class Report implements IEndpoint<Request, {}> {
 
     const validation = await ReportListValidation(req.parameters);
 
-    if (validation instanceof Error) {
-      return validation;
-    }
+    if (validation instanceof Error) { return validation; }
 
     const client = new Client(process.env.DATABASE_URI);
     client.connect().catch(err => errorGenerator(err));
@@ -29,13 +39,9 @@ export default class Report implements IEndpoint<Request, {}> {
     const queryResult = await reportQueries.getAll();
     
     if (queryResult instanceof Error) { 
-      return errorGenerator(
-        queryResult.message,
-        500,
-        queryResult.stack
-      );
+      return errorGenerator( queryResult.message, 500, queryResult.stack );
     }
 
-    return {data: queryResult.rows || []};
+    return {data: queryResult.rows.map( (row: any) => normalizeReport(row) ) || []};
   }
 }
