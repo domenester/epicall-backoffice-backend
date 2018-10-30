@@ -20,7 +20,7 @@ const normalizeReport = (report: any) => ({
 } as IReportList);
 export default class Report implements IEndpoint<Request, {}> {
   public path = "/list";
-  public method: Verb = "get";
+  public method: Verb = "post";
   public bodySchema = "";
   private logger: winston.Logger;
   constructor(logger: winston.Logger) {
@@ -29,14 +29,14 @@ export default class Report implements IEndpoint<Request, {}> {
   public handler = async (req: IRequest) => {
     this.logger.info(`Accessing path: ${this.path}`);
 
-    const validation = await ReportListValidation(req.parameters);
+    const validation = await ReportListValidation(req.body);
 
     if (validation instanceof Error) { return validation; }
 
     const client = new Client(process.env.DATABASE_URI);
     client.connect().catch(err => errorGenerator(err));
     const reportQueries = new ReportQueries(client);
-    const queryResult = await reportQueries.getAll();
+    const queryResult = await reportQueries.getByFilter(req.body || {});
     
     if (queryResult instanceof Error) { 
       return errorGenerator( queryResult.message, 500, queryResult.stack );
