@@ -34,6 +34,6 @@ describe("Testing Messages", async () => {
       },
     );
     response = JSON.parse(response);
-    expect(response.data).to.be.equal("Not implemented yet");
+    expect(response.data).to.be.not.null;
   });
 });

@@ -3,6 +3,7 @@ import * as winston from "winston";
 import {IEndpoint, IRequest, Verb} from "../../../endpoint/endpoint.interface";
 import { MessageListValidation } from "../validations/message-list.validation";
 import { MessageService } from "../../../../services";
+import { messageTreeFormat } from "./utils/message-format";
 
 export default class MessageList implements IEndpoint<Request, {}> {
   public path = "/list";
@@ -17,13 +18,13 @@ export default class MessageList implements IEndpoint<Request, {}> {
 
     const validation = await MessageListValidation(req.parameters);
 
-    if (validation instanceof Error) {
-      return validation;
-    }
+    if (validation instanceof Error) { return validation; }
 
     const listMessage = await MessageService.list(req.parameters || {});
     if (listMessage instanceof Error) { return listMessage; }
 
-    return {data: listMessage};
+    const treeFormat = messageTreeFormat(listMessage);
+
+    return {data: treeFormat};
   }
 }

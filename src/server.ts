@@ -10,13 +10,13 @@ import * as winston from "winston";
 import EndpointsApi from "./components/endpoint/index";
 import {errorGenerator, errorHandler, IErrorGenerator} from "./components/error/error";
 import {default as Logger} from "./components/logger/logger";
-import Database from "./database";
+import { Database } from "./database";
 import { default as serverConfigs } from "./config/server";
 import * as multer from "multer";
+import { Client } from "pg";
 
 const env = process.env;
 dotenv.config({ path: path.join(__dirname, "../.env")});
-const database = Database(process.env.DATABASE_URI);
 
 class Server {
 
@@ -32,17 +32,20 @@ class Server {
 
     private errorHandler: ErrorRequestHandler;
 
+    private database: Database;
+
     constructor() {
         this.app = express();
         this.logger = Logger;
         this.errorHandler = errorHandler(this.logger);
+        this.database = new Database(process.env.DATABASE_URI);
     }
 
     public async start(): Promise<void> {
       try {
         await this.middlewares();
         await this.exposeEndpoints();
-        await database.start();
+        await this.database.initialize();
         this.server = this.app.listen(this.port, this.host, () => {
           this.logger.info(`Listening to: http://${this.host}:${this.port}`);
         });
@@ -101,7 +104,7 @@ class Server {
               const result = await endpoint.handler({
                 body: Object.keys(req.body).length > 0 ? req.body : req.files || req.file,
                 headers: req.headers,
-                parameters: req.query,
+                parameters: req.query
               });
 
               if (result instanceof Error) {

@@ -6,7 +6,7 @@ import FixtureTables from "./fixture";
 import { LogAccess, LogCall, LogConference, LogConferenceParticipant } from "./tables";
 
 
-class Database {
+export class Database {
 
   private logger: winston.Logger;
   private uri: string;
@@ -17,10 +17,11 @@ class Database {
     this.uri = uri;
   }
 
-  public async start() {
+  public async initialize() {
     this.client = new pg.Client(this.uri);
     this.client.connect().catch(err => errorGenerator(err));
     await FixtureTables(this.client);
+    this.client.end();
   }
 }
 
@@ -43,5 +44,3 @@ export const dropTables = async (client: pg.Client) => {
     return dropedTables;
   }
 }
-
-export default (uri: string) => new Database(uri);

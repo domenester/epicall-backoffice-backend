@@ -5,7 +5,7 @@ import {IEndpoint, IEndpointAPI} from "../../endpoint/endpoint.interface";
 import Message from "./endpoints/message-list";
 
 class MessageApi implements IEndpointAPI {
-  public path = "/messages";
+  public path = "/message";
   public endpoints: Array<IEndpoint<Request, any>>;
   private logger: winston.Logger;
   constructor(logger: winston.Logger) {
