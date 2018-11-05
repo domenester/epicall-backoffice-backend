@@ -9,3 +9,12 @@ export interface IReportList {
   videoDuration: any;
   conferenceDuration: any;
 }
+
+export interface IReportFilter {
+  users?: Array<string>;
+  extension?: string;
+  department?: string;
+  start?: string;
+  end?: string;
+  grouping?: "day" | "hour";
+}

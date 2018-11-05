@@ -2,6 +2,7 @@ import { Client } from "pg";
 import { LOG_ACCESS, LOG_CALL, LOG_CONFERENCE } from "../tables/config";
 import { errorGenerator } from "../../components/error";
 import { postgreeDateFormat } from "../utils/postgree";
+import { IReportFilter } from "../../interfaces";
 
 export class ReportQueries {
 
@@ -11,7 +12,7 @@ export class ReportQueries {
     this.client = client;
   }
 
-  async getByFilter(filter: any) {
+  async getByFilter(filter: IReportFilter) {
     
     const { fields } = LOG_ACCESS;
     let where = " WHERE ";
@@ -26,12 +27,18 @@ export class ReportQueries {
     let userLogCallFilter = "";
     let userLogConferenceFilter = "";
 
+    let groupingByDate = "day";
+
     if (Object.keys(filter).length > 0) {
-      logAccessFilter = where;
-      logCallFilter = where;
-      logConferenceFilter = where;
+
+      if (filter.grouping === "hour") { groupingByDate = filter.grouping; }
 
       if (filter.start && filter.end) {
+
+        if (!logAccessFilter) logAccessFilter = where;
+        if (!logCallFilter) logCallFilter = where;
+        if (!logConferenceFilter) logConferenceFilter = where;
+
         logAccessFilter += ` 
         ${fields.createdAt.value} >= '${ postgreeDateFormat(filter.start) }' 
         AND ${fields.createdAt.value} < '${ postgreeDateFormat(filter.end) }' `;
@@ -46,6 +53,11 @@ export class ReportQueries {
       }
   
       if (filter.users && filter.users.length > 0) {
+
+        if (!logAccessFilter) logAccessFilter = where;
+        if (!logCallFilter) logCallFilter = where;
+        if (!logConferenceFilter) logConferenceFilter = where;
+
         let users = filter.users.map( (u: any) => `'${u}'`).toString();
         if (filter.users.length > 1) {
           userLogAccessFilter = ` ${LOG_ACCESS.fields.userId.value} IN (${users})`;
@@ -84,7 +96,7 @@ export class ReportQueries {
                 Sum(logincount) AS logincount, 
                 Sum(timelogged) AS timelogged 
         FROM     ( 
-                          SELECT   Date_trunc('day', la.${fields.createdAt.value})                                                AS createdat,
+                          SELECT   Date_trunc('${groupingByDate}', la.${fields.createdAt.value})                                                AS createdat,
                                   Count(*) filter (WHERE ${fields.isLogoff.value} = false)                                       AS logincount,
                                   COALESCE( lead(la.${fields.createdAt.value}) OVER(ORDER BY la.${fields.createdAt.value} ASC)) - la.${fields.createdAt.value} AS timelogged
                           FROM     ${LOG_ACCESS.name} la 
@@ -98,7 +110,7 @@ export class ReportQueries {
                 Sum(videocount) AS videocount, 
                 Sum(audioduration)  AS audioduration, 
                 Sum(videoduration)  AS videoduration 
-          FROM   (SELECT Date_trunc('day', lc.${LOG_CALL.fields.startedAt.value})  AS startedat, 
+          FROM   (SELECT Date_trunc('${groupingByDate}', lc.${LOG_CALL.fields.startedAt.value})  AS startedat, 
                         Count(*) filter (WHERE ${LOG_CALL.fields.type.value} = 0) AS audiocount,
                         Count(*) filter (WHERE ${LOG_CALL.fields.type.value} = 1) AS videocount,
                         CASE ${LOG_CALL.fields.type.value} WHEN 0 THEN ( lc.${LOG_CALL.fields.endedAt.value} - lc.${LOG_CALL.fields.startedAt.value} ) ELSE '0' END AS audioduration, 
@@ -113,7 +125,7 @@ export class ReportQueries {
             SELECT startedat, 
                   Sum(confcount)    AS confcount, 
                   Sum(confduration) AS confduration 
-            FROM   (SELECT Date_trunc('day', lconf.${LOG_CONFERENCE.fields.startedAt.value})     AS startedat, 
+            FROM   (SELECT Date_trunc('${groupingByDate}', lconf.${LOG_CONFERENCE.fields.startedAt.value})     AS startedat, 
                           Count(*)                                 AS confcount, 
                           ( lconf.${LOG_CONFERENCE.fields.endedAt.value} - lconf.${LOG_CONFERENCE.fields.startedAt.value} ) AS confduration 
                     FROM   ${LOG_CONFERENCE.name} lconf 

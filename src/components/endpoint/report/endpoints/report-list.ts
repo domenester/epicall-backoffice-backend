@@ -5,7 +5,7 @@ import {IEndpoint, IRequest, Verb} from "../../../endpoint/endpoint.interface";
 import { ReportListValidation } from "../validations/report-list.validation";
 import { ReportQueries } from "../../../../database/queries";
 import { errorGenerator } from "../../../error";
-import { IReportList } from "../../../../interfaces/report.interface";
+import { IReportList, IReportFilter } from "../../../../interfaces/report.interface";
 
 const normalizeReport = (report: any) => ({
   createdAt: report.createdat,
@@ -36,7 +36,7 @@ export default class Report implements IEndpoint<Request, {}> {
     const client = new Client(process.env.DATABASE_URI);
     client.connect().catch(err => errorGenerator(err));
     const reportQueries = new ReportQueries(client);
-    const queryResult = await reportQueries.getByFilter(req.body || {});
+    const queryResult = await reportQueries.getByFilter(req.body as IReportFilter);
     
     if (queryResult instanceof Error) { 
       return errorGenerator( queryResult.message, 500, queryResult.stack );

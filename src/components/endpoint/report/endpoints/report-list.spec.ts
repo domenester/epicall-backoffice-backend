@@ -85,6 +85,13 @@ describe("Testing Reports", async () => {
     expect(response.data.length).to.be.equal(1);
   });
 
+  it("should return reports by grouping", async () => {
+    let response = await requestReportService({
+      grouping: "hour"
+    });
+    expect(response.data.length).to.be.equal(3);
+  });
+
   it("should drop tables used for tests", async () => {
     await dropTables(client).catch(err => err);
   });
