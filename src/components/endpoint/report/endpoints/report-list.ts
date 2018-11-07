@@ -24,6 +24,7 @@ export default class Report implements IEndpoint<Request, {}> {
   public bodySchema = "";
   private logger: winston.Logger;
   constructor(logger: winston.Logger) {
+
     this.logger = logger;
   }
   public handler = async (req: IRequest) => {
@@ -37,7 +38,8 @@ export default class Report implements IEndpoint<Request, {}> {
     client.connect().catch(err => errorGenerator(err));
     const reportQueries = new ReportQueries(client);
     const queryResult = await reportQueries.getByFilter(req.body as IReportFilter);
-    
+    await client.end();
+
     if (queryResult instanceof Error) { 
       return errorGenerator( queryResult.message, 500, queryResult.stack );
     }

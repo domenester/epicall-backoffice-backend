@@ -11,9 +11,10 @@ import { IRequest } from "../../endpoint.interface";
 import ReportList from "./report-list";
 import ReportApi from "../report.api";
 import { Client } from "pg";
+import * as sequelize from "sequelize";
 import { errorGenerator } from "../../../error";
-import { dropTables } from "../../../../database";
 import { logAccessQuery, logConferenceQuery, logCallQuery, logConferenceParticipantQuery } from "./test/queries.spec";
+import { LogAccessInstance, LogCallInstance, LogConferenceInstance, LogConferenceParticipantInstance } from "../../../../database/tables";
 
 describe("Testing Reports", async () => {
 
@@ -34,8 +35,12 @@ describe("Testing Reports", async () => {
     return JSON.parse(response);
   }
 
-  const client = new Client(process.env.DATABASE_URI);
-  client.connect().catch(err => errorGenerator(err));
+  const seq = new sequelize(process.env.DATABASE_URI);
+
+  const logAccess = LogAccessInstance(seq);
+  const logCall = LogCallInstance(seq);
+  const logConference = LogConferenceInstance(seq);
+  const logConferenceParticipant = LogConferenceParticipantInstance(seq, logConference.model);
 
   before( async () => {
     await server.start();
@@ -46,10 +51,13 @@ describe("Testing Reports", async () => {
   });
 
   it("should insert initial datas", async () => {
-    await client.query(logAccessQuery()).catch(err => err);
-    await client.query(logCallQuery()).catch(err => err);
-    await client.query(logConferenceQuery()).catch(err => err);
-    await client.query(logConferenceParticipantQuery()).catch(err => err);
+    await seq.sync().catch(err => err);
+    await Promise.all([
+      logAccess.createMocks(),
+      logCall.createMocks(),
+      logConference.createMocks(),
+      logConferenceParticipant.createMocks()
+    ]).catch(err => err);
   });
 
   it("should return all reports", async () => {
@@ -93,6 +101,11 @@ describe("Testing Reports", async () => {
   });
 
   it("should drop tables used for tests", async () => {
-    await dropTables(client).catch(err => err);
+    await Promise.all([
+      logAccess.drop(),
+      logCall.drop(),
+      logConference.drop(),
+      logConferenceParticipant.drop()
+    ]).catch(err => err);
   });
 });

@@ -1,33 +1,60 @@
 import { Client } from "pg";
+import * as sequelize from "sequelize";
+import { Sequelize, Model as sequelizeModel } from "sequelize";
 import { LOG_ACCESS, LOG_CALL, LOG_CONFERENCE } from "./config";
 import { errorGenerator } from "../../components/error";
+import { logAccessQuery } from "./test/queries.spec";
+import { ITableHandler }  from "../../interfaces";
 
-export class LogAccess {
+export class LogAccess implements ITableHandler{
 
-  client: Client;
+  sequelize: Sequelize;
+  model: sequelize.Model<string, {}>;
 
-  constructor(client: Client){
-    this.client = client;
+  constructor(sequelize: Sequelize){
+    this.sequelize = sequelize;
   }
 
-  async initialize() {
+  initialize() {
 
     const { fields } = LOG_ACCESS;
 
-    const query = await this.client.query(
-      `CREATE TABLE IF NOT EXISTS ${LOG_ACCESS.name} (
-        ${fields.id.value} UUID NOT NULL PRIMARY KEY,
-        ${fields.userId.value} UUID NOT NULL,
-        ${fields.createdAt.value} TIMESTAMP NOT NULL DEFAULT NOW(),
-        ${fields.isLogoff.value} BOOLEAN NOT NULL
-      )`
-    ).catch(err => err);
+    this.model = this.sequelize.define(LOG_ACCESS.name, {
+      [fields.id.value]: {
+        type: sequelize.UUID,
+        primaryKey: fields.id.primaryKey,
+      },
+      [fields.userId.value]: {
+        type: sequelize.UUID,
+        allowNull: false
+      },
+      [fields.createdAt.value]: {
+        type: sequelize.DATE,
+        allowNull: false
+      },
+      [fields.isLogoff.value]: {
+        type: sequelize.BOOLEAN,
+        allowNull: false
+      }
+    }, { 
+      freezeTableName: true,
+      timestamps:false
+    });
+  }
 
-    return query;
+  async createMocks() {
+    const operation = await logAccessQuery(this.model);
+    return operation;
   }
 
   async drop() {
-    const query = await this.client.query(`DROP TABLE ${LOG_ACCESS.name}`);
-    return query;
+    const operation = await this.model.drop().catch(err => err);
+    return operation;
   }
+}
+
+export const LogAccessInstance = (sequelize: Sequelize) => {
+  const logAccess = new LogAccess(sequelize);
+  logAccess.initialize();
+  return logAccess;
 }

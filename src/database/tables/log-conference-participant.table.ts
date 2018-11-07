@@ -1,36 +1,74 @@
 import { Client } from "pg";
 import { LOG_CONFERENCE_PARTICIPANT, LOG_CONFERENCE } from "./config";
 import { errorGenerator } from "../../components/error";
+import { ITableHandler } from "../../interfaces";
+import { Sequelize } from "sequelize";
+import * as sequelize from "sequelize";
+import { logConferenceParticipantQuery } from "./test/queries.spec";
 
-export class LogConferenceParticipant {
+export class LogConferenceParticipant implements ITableHandler{
 
-  client: Client;
+  sequelize: Sequelize;
+  model: sequelize.Model<string, {}>;
 
-  constructor(client: Client){
-    this.client = client;
+  constructor(sequelize: Sequelize){
+    this.sequelize = sequelize;
   }
 
-  async initialize() {
+  initialize(modelForeign: sequelize.Model<string, {}>) {
 
     const { fields } = LOG_CONFERENCE_PARTICIPANT;
 
-    const query = await this.client.query(
-      `CREATE TABLE IF NOT EXISTS ${LOG_CONFERENCE_PARTICIPANT.name} (
-        ${fields.id.value} UUID NOT NULL PRIMARY KEY,
-        ${fields.createdAt.value} TIMESTAMP NOT NULL DEFAULT NOW(),
-        ${fields.userId.value} UUID NOT NULL,
-        ${fields.idConference.value} UUID NOT NULL REFERENCES ${LOG_CONFERENCE.name},
-        ${fields.gotInAt.value} TIMESTAMP NOT NULL,
-        ${fields.gotOutAt.value} TIMESTAMP NOT NULL,
-        ${fields.status.value} INTEGER
-      )`
-    ).catch(err => err);
+    this.model = this.sequelize.define(LOG_CONFERENCE_PARTICIPANT.name, {
+      [fields.id.value]: {
+        type: sequelize.UUID,
+        primaryKey: fields.id.primaryKey
+      },
+      [fields.createdAt.value]: {
+        type: sequelize.DATE,
+        allowNull: false,
+        defaultValue: sequelize.NOW
+      },
+      [fields.userId.value]: {
+        type: sequelize.UUID,
+        allowNull: false
+      },
+      [fields.gotInAt.value]: {
+        type: sequelize.DATE,
+        allowNull: false
+      },
+      [fields.gotOutAt.value]: {
+        type: sequelize.DATE,
+        allowNull: false
+      },
+      [fields.status.value]: {
+        type: sequelize.INTEGER,
+        allowNull: false
+      }
+    }, { 
+      freezeTableName: true,
+      timestamps: false
+    });
 
-    return query;
+    this.model.belongsTo(modelForeign);
+  }
+
+  async createMocks() {
+    const operation = await logConferenceParticipantQuery(this.model);
+    return operation;
   }
 
   async drop() {
-    const query = await this.client.query(`DROP TABLE ${LOG_CONFERENCE_PARTICIPANT.name} CASCADE`);
-    return query;
+    const operation = await this.model.drop().catch(err => err);
+    return operation;
   }
+}
+
+export const LogConferenceParticipantInstance = (
+  sequelize: Sequelize,
+  modelForeign: sequelize.Model<string, {}>
+) => {
+  const logConference = new LogConferenceParticipant(sequelize);
+  logConference.initialize(modelForeign);
+  return logConference;
 }

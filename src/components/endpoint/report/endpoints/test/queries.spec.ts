@@ -1,53 +1,100 @@
 import { LOG_ACCESS, LOG_CALL, LOG_CONFERENCE, LOG_CONFERENCE_PARTICIPANT } from "../../../../../database/tables/config";
+import { Model as sequelizeModel} from "sequelize";
 
-export const logAccessQuery = () => {
-  return `insert into ${LOG_ACCESS.name} (
-    ${LOG_ACCESS.fields.id.value},
-    ${LOG_ACCESS.fields.userId.value},
-    ${LOG_ACCESS.fields.createdAt.value},
-    ${LOG_ACCESS.fields.isLogoff.value}
-  ) values (
-    '0c6dda1a-84da-4cbf-9ea2-f8f566475b3e',
-    'bc3357ba817994aa764471ccff6a375d',
-    '2018-10-24 10:23:54',
-    false
-  ), (
-    'afe6d372-42c5-4b83-8d54-136de877814e',
-    'bc3357ba817994aa764471ccff6a375d',
-    '2018-10-24 10:27:54',
-    true
-  ), (
-    '683d5fd5-ccbd-4112-adef-dffd0f3adfb2',
-    'bc3357ba817994aa764471ccff6a375d',
-    '2018-10-24 10:29:54',
-    false
-  ), (
-    '5cd34d6b-bd87-436a-8a96-e5c64bf887f7',
-    'bc3357ba817994aa764471ccff6a375d',
-    '2018-10-24 10:34:54',
-    true
-  ), (
-    'c195dbdc-52b4-4305-b370-680668be56d5',
-    'bc3357ba817994aa764471ccff6a375d',
-    '2018-10-24 12:29:54',
-    false
-  ), (
-    '719d94cf-4fe3-4b05-9fde-8437ab2b24b7',
-    'bc3357ba817994aa764471ccff6a375d',
-    '2018-10-24 12:34:54',
-    true
-  ), (
-    '0760fbfe-0dab-49ba-8fd7-29197211919f',
-    'bc3357ba817994aa764471ccff6a375d',
-    '2018-10-29 10:24:54',
-    false
-  ), (
-    '66e986b3-ac22-4b61-8326-92983d7781b8',
-    'bc3357ba817994aa764471ccff6a375d',
-    '2018-10-29 10:28:54',
-    true
-  );`;
+export const logAccessQuery = async (model: sequelizeModel<string, {}>) => { 
+  const query = await model.bulkCreate([{
+    [LOG_ACCESS.fields.id.value]: '0c6dda1a-84da-4cbf-9ea2-f8f566475b3e',
+    [LOG_ACCESS.fields.userId.value]: 'bc3357ba817994aa764471ccff6a375d',
+    [LOG_ACCESS.fields.createdAt.value]: '2018-10-24 10:23:54',
+    [LOG_ACCESS.fields.isLogoff.value]: false
+  }, {
+    [LOG_ACCESS.fields.id.value]: 'afe6d372-42c5-4b83-8d54-136de877814e',
+    [LOG_ACCESS.fields.userId.value]: 'bc3357ba817994aa764471ccff6a375d',
+    [LOG_ACCESS.fields.createdAt.value]: '2018-10-24 10:27:54',
+    [LOG_ACCESS.fields.isLogoff.value]: true
+  }, {
+    [LOG_ACCESS.fields.id.value]: '683d5fd5-ccbd-4112-adef-dffd0f3adfb2',
+    [LOG_ACCESS.fields.userId.value]: 'bc3357ba817994aa764471ccff6a375d',
+    [LOG_ACCESS.fields.createdAt.value]: '2018-10-24 10:29:54',
+    [LOG_ACCESS.fields.isLogoff.value]: false
+  }, {
+    [LOG_ACCESS.fields.id.value]: '5cd34d6b-bd87-436a-8a96-e5c64bf887f7',
+    [LOG_ACCESS.fields.userId.value]: 'bc3357ba817994aa764471ccff6a375d',
+    [LOG_ACCESS.fields.createdAt.value]: '2018-10-24 10:34:54',
+    [LOG_ACCESS.fields.isLogoff.value]: true
+  }, {
+    [LOG_ACCESS.fields.id.value]: 'c195dbdc-52b4-4305-b370-680668be56d5',
+    [LOG_ACCESS.fields.userId.value]: 'bc3357ba817994aa764471ccff6a375d',
+    [LOG_ACCESS.fields.createdAt.value]: '2018-10-24 12:29:54',
+    [LOG_ACCESS.fields.isLogoff.value]: false
+  }, {
+    [LOG_ACCESS.fields.id.value]: '719d94cf-4fe3-4b05-9fde-8437ab2b24b7',
+    [LOG_ACCESS.fields.userId.value]: 'bc3357ba817994aa764471ccff6a375d',
+    [LOG_ACCESS.fields.createdAt.value]: '2018-10-24 12:34:54',
+    [LOG_ACCESS.fields.isLogoff.value]: true
+  }, {
+    [LOG_ACCESS.fields.id.value]: '0760fbfe-0dab-49ba-8fd7-29197211919f',
+    [LOG_ACCESS.fields.userId.value]: 'bc3357ba817994aa764471ccff6a375d',
+    [LOG_ACCESS.fields.createdAt.value]: '2018-10-29 10:24:54',
+    [LOG_ACCESS.fields.isLogoff.value]: false
+  },{
+    [LOG_ACCESS.fields.id.value]: '66e986b3-ac22-4b61-8326-92983d7781b8',
+    [LOG_ACCESS.fields.userId.value]: 'bc3357ba817994aa764471ccff6a375d',
+    [LOG_ACCESS.fields.createdAt.value]: '2018-10-29 10:28:54',
+    [LOG_ACCESS.fields.isLogoff.value]: true
+  }]);
+
+  return query;
 };
+
+// export const logAccessQuery = () => {
+//   return `insert into ${LOG_ACCESS.name} (
+//     ${LOG_ACCESS.fields.id.value},
+//     ${LOG_ACCESS.fields.userId.value},
+//     ${LOG_ACCESS.fields.createdAt.value},
+//     ${LOG_ACCESS.fields.isLogoff.value}
+//   ) values (
+//     '0c6dda1a-84da-4cbf-9ea2-f8f566475b3e',
+//     'bc3357ba817994aa764471ccff6a375d',
+//     '2018-10-24 10:23:54',
+//     false
+//   ), (
+//     'afe6d372-42c5-4b83-8d54-136de877814e',
+//     'bc3357ba817994aa764471ccff6a375d',
+//     '2018-10-24 10:27:54',
+//     true
+//   ), (
+//     '683d5fd5-ccbd-4112-adef-dffd0f3adfb2',
+//     'bc3357ba817994aa764471ccff6a375d',
+//     '2018-10-24 10:29:54',
+//     false
+//   ), (
+//     '5cd34d6b-bd87-436a-8a96-e5c64bf887f7',
+//     'bc3357ba817994aa764471ccff6a375d',
+//     '2018-10-24 10:34:54',
+//     true
+//   ), (
+//     'c195dbdc-52b4-4305-b370-680668be56d5',
+//     'bc3357ba817994aa764471ccff6a375d',
+//     '2018-10-24 12:29:54',
+//     false
+//   ), (
+//     '719d94cf-4fe3-4b05-9fde-8437ab2b24b7',
+//     'bc3357ba817994aa764471ccff6a375d',
+//     '2018-10-24 12:34:54',
+//     true
+//   ), (
+//     '0760fbfe-0dab-49ba-8fd7-29197211919f',
+//     'bc3357ba817994aa764471ccff6a375d',
+//     '2018-10-29 10:24:54',
+//     false
+//   ), (
+//     '66e986b3-ac22-4b61-8326-92983d7781b8',
+//     'bc3357ba817994aa764471ccff6a375d',
+//     '2018-10-29 10:28:54',
+//     true
+//   );`;
+// };
 
 export const logCallQuery = () => {
   return `
