@@ -45,7 +45,6 @@ class Server {
       try {
         await this.middlewares();
         await this.exposeEndpoints();
-        // await this.database.initialize();
         this.server = this.app.listen(this.port, this.host, () => {
           this.logger.info(`Listening to: http://${this.host}:${this.port}`);
         });
