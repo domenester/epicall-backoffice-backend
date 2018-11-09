@@ -14,7 +14,7 @@ import { Client } from "pg";
 import * as sequelize from "sequelize";
 import { errorGenerator } from "../../../error";
 import { logAccessQuery, logConferenceQuery, logCallQuery, logConferenceParticipantQuery } from "./test/queries.spec";
-import { LogAccessInstance, LogCallInstance, LogConferenceInstance, LogConferenceParticipantInstance } from "../../../../database/tables";
+import { LogAccessInstance, LogCallInstance, LogConferenceInstance, LogConferenceParticipantInstance } from "epicall-log-tables";
 
 describe("Testing Reports", async () => {
 
@@ -35,12 +35,13 @@ describe("Testing Reports", async () => {
     return JSON.parse(response);
   }
 
-  const seq = new sequelize(process.env.DATABASE_URI);
+  // const seq = new sequelize(process.env.DATABASE_URI);
+  const uri = process.env.DATABASE_URI;
 
-  const logAccess = LogAccessInstance(seq);
-  const logCall = LogCallInstance(seq);
-  const logConference = LogConferenceInstance(seq);
-  const logConferenceParticipant = LogConferenceParticipantInstance(seq, logConference.model);
+  const logAccess = LogAccessInstance(uri);
+  const logCall = LogCallInstance(uri);
+  const logConference = LogConferenceInstance(uri);
+  const logConferenceParticipant = LogConferenceParticipantInstance(uri, logConference.model);
 
   before( async () => {
     await server.start();
@@ -51,13 +52,14 @@ describe("Testing Reports", async () => {
   });
 
   it("should insert initial datas", async () => {
-    await seq.sync().catch(err => err);
-    await Promise.all([
-      logAccess.createMocks(),
-      logCall.createMocks(),
-      logConference.createMocks(),
-      logConferenceParticipant.createMocks()
-    ]).catch(err => err);
+    await logAccess.sequelize.sync().catch(err => err);
+    await logAccess.createMocks(logAccessQuery).catch(err => err);
+    await logCall.sequelize.sync().catch(err => err);
+    await logCall.createMocks(logCallQuery).catch(err => err);
+    await logConference.sequelize.sync().catch(err => err);
+    await logConference.createMocks(logConferenceQuery).catch(err => err);
+    await logConferenceParticipant.sequelize.sync().catch(err => err);
+    await logConferenceParticipant.createMocks(logConferenceParticipantQuery).catch(err => err);
   });
 
   it("should return all reports", async () => {
@@ -101,11 +103,9 @@ describe("Testing Reports", async () => {
   });
 
   it("should drop tables used for tests", async () => {
-    await Promise.all([
-      logAccess.drop(),
-      logCall.drop(),
-      logConference.drop(),
-      logConferenceParticipant.drop()
-    ]).catch(err => err);
+    await logAccess.drop().catch(err => err);
+    await logCall.drop().catch(err => err);
+    await logConference.drop().catch(err => err);
+    await logConferenceParticipant.drop().catch(err => err);
   });
 });

@@ -1,5 +1,5 @@
 import { Client } from "pg";
-import { LOG_ACCESS, LOG_CALL, LOG_CONFERENCE } from "../tables/config";
+import { LOG_ACCESS, LOG_CALL, LOG_CONFERENCE } from "epicall-log-tables";
 import { errorGenerator } from "../../components/error";
 import { postgreeDateFormat } from "../utils/postgree";
 import { IReportFilter } from "../../interfaces";
