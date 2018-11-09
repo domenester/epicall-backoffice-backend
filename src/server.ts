@@ -10,10 +10,9 @@ import * as winston from "winston";
 import EndpointsApi from "./components/endpoint/index";
 import {errorGenerator, errorHandler, IErrorGenerator} from "./components/error/error";
 import {default as Logger} from "./components/logger/logger";
-import { Database } from "./database";
+import DatabaseInstance, { Database } from "./database";
 import { default as serverConfigs } from "./config/server";
 import * as multer from "multer";
-import { Client } from "pg";
 
 const env = process.env;
 dotenv.config({ path: path.join(__dirname, "../.env")});
@@ -38,11 +37,11 @@ class Server {
         this.app = express();
         this.logger = Logger;
         this.errorHandler = errorHandler(this.logger);
-        this.database = new Database(process.env.DATABASE_URI);
     }
 
     public async start(): Promise<void> {
       try {
+        this.database = await DatabaseInstance(process.env.DATABASE_URI);
         await this.middlewares();
         await this.exposeEndpoints();
         this.server = this.app.listen(this.port, this.host, () => {

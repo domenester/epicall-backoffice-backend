@@ -1,6 +1,7 @@
 import * as winston from "winston";
 import {default as Logger} from "../components/logger/logger";
 import * as sequelize from "sequelize";
+import { fixtureTables } from "./fixture";
 
 export class Database {
 
@@ -13,4 +14,10 @@ export class Database {
     this.uri = uri;
     this.sequelize = new sequelize(this.uri);
   }
+}
+
+export default async (uri: string) => {
+  const db = new Database(uri);
+  await fixtureTables(uri);
+  return db;
 }

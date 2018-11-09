@@ -41,7 +41,7 @@ describe("Testing Reports", async () => {
   const logAccess = LogAccessInstance(uri);
   const logCall = LogCallInstance(uri);
   const logConference = LogConferenceInstance(uri);
-  const logConferenceParticipant = LogConferenceParticipantInstance(uri, logConference.model);
+  const logConferenceParticipant = LogConferenceParticipantInstance(uri);
 
   before( async () => {
     await server.start();

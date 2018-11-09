@@ -1,17 +1,14 @@
-import * as sequelize from "sequelize";
-import { Client } from "pg";
-import { LogAccess, LogCall, LogConference, LogConferenceParticipant } from "./tables";
+import { LogAccessInstance, LogCallInstance, LogConferenceInstance, LogConferenceParticipantInstance } from "epicall-log-tables";
 
-export default async (seq: sequelize.Sequelize) => {
-  // const logAccess = new LogAccess(seq);
-  // await logAccess.initialize().catch(err => err);
 
-  // const logCall = new LogCall(seq);
-  // await logCall.initialize();
+export const fixtureTables = async (uri: string): Promise<void> => {
+  const logAccess = LogAccessInstance(uri);
+  const logCall = LogCallInstance(uri);
+  const logConference = LogConferenceInstance(uri);
+  const logConferenceParticipant = LogConferenceParticipantInstance(uri);
 
-  // const logConference = new LogConference(seq);
-  // await logConference.initialize();
-
-  // const logConferenceParticipant = new LogConferenceParticipant(client);
-  // await logConferenceParticipant.initialize();
+  await logAccess.sequelize.sync().catch(err => err);
+  await logCall.sequelize.sync().catch(err => err);
+  await logConference.sequelize.sync().catch(err => err);
+  await logConferenceParticipant.sequelize.sync().catch(err => err);
 }
