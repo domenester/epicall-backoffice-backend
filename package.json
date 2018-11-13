@@ -33,6 +33,7 @@
     "winston": "^3.0.0"
   },
   "dependencies": {
+    "@types/acl": "^0.4.35",
     "@types/body-parser": "^1.17.0",
     "@types/cors": "^2.8.4",
     "@types/dotenv": "^4.0.3",
@@ -44,6 +45,7 @@
     "@types/pg": "^7.4.11",
     "@types/request-promise": "^4.1.42",
     "@types/sequelize": "^4.27.30",
+    "acl": "^0.4.11",
     "body-parser": "^1.18.3",
     "cors": "^2.8.4",
     "dotenv": "^6.0.0",

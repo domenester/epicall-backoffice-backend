@@ -13,6 +13,8 @@ import {default as Logger} from "./components/logger/logger";
 import DatabaseInstance, { Database } from "./database";
 import { default as serverConfigs } from "./config/server";
 import * as multer from "multer";
+import Authorization from "./middleware/authorization";
+import * as jwt from "jsonwebtoken";
 
 const env = process.env;
 dotenv.config({ path: path.join(__dirname, "../.env")});
@@ -65,9 +67,16 @@ class Server {
 
       if (process.env.NODE_ENV === "development") {
         middlewares.push(this.errorHandler);
-        middlewares.push(cors());
+        middlewares.push(cors({
+          allowedHeaders: ['Authorization', 'Content-Type'],
+          exposedHeaders: ['Authorization'],
+          origin: "*",
+          methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
+          preflightContinue: false,
+          optionsSuccessStatus: 204
+        }));
       }
-
+      
       this.app.use('/public', express.static(__dirname + '/public'));
 
       if (middlewares.length > 0) {
@@ -83,6 +92,12 @@ class Server {
       }
     }
 
+    private refreshToken() {
+      return jwt.sign(
+        { key: process.env.JWT_SECRET }, process.env.JWT_SECRET, { expiresIn: 60 * 0.1 },
+      );
+    }
+
     private exposeEndpoints(): Promise<{}> {
       if (!EndpointsApi) {
         throw errorGenerator("No endpoint found to expose", 500, "");
@@ -92,13 +107,20 @@ class Server {
           const endpointApi = new endpointApiClass(this.logger);
           endpointApi.endpoints.map((endpoint) => {
             const endpointPath = `${endpointApi.path}${endpoint.path}`;
-            this.app[endpoint.method](endpointPath, this.requestMiddleware(endpoint.path), async (req, res) => {
+            this.app[endpoint.method](
+              endpointPath,
+              [this.requestMiddleware(endpoint.path), Authorization],
+              async (req, res) => {
+
+              res.setHeader("Authorization", this.refreshToken());
+              
               if ( (endpoint.method === "post" || endpoint.method === "put") && !req.body) {
                 // tslint:disable-next-line:max-line-length
                 const message = `Requisição sem corpo para método ${endpoint.method.toUpperCase()} no endereço ${endpointPath}`;
                 this.logger.error(message);
                 return res.status(400).json(message);
               }
+
               const result = await endpoint.handler({
                 body: Object.keys(req.body).length > 0 ? req.body : req.files || req.file || {},
                 headers: req.headers,
