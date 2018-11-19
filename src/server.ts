@@ -94,7 +94,7 @@ class Server {
 
     private refreshToken() {
       return jwt.sign(
-        { key: process.env.JWT_SECRET }, process.env.JWT_SECRET, { expiresIn: 60 * 0.1 },
+        { key: process.env.JWT_SECRET }, process.env.JWT_SECRET, { expiresIn: serverConfigs.token.expiresIn },
       );
     }
 
