@@ -18,8 +18,13 @@ const responseUnauthorized = {
 } as IErrorGenerator
 
 export default (req, res, next): NextHandleFunction => {
-  if ( isPathPublic(req.url, req.method) ) { return next(); }
-  if ( !process.env.NODE_ENV || process.env.NODE_ENV === "test" ) { return next(); }
+  if (
+    isPathPublic(req.url, req.method) ||
+    !process.env.NODE_ENV || 
+    process.env.NODE_ENV === "test" ||
+    process.env.NODE_ENV === "development"
+  ) { return next(); }
+
   const accessToken = req.headers["authorization"];
   if (!accessToken) { return next(new Error("Token obrigatório.")); }
   let decoded;
